@@ -1,5 +1,0 @@
-GET http://localhost:8080/api/v1/afisha/event/film/bc17ef90-b0a2-4d43-ad80-4e28e09c48bb
-Accept: application/json
-
-#GET http://localhost:8080/api/v1/afisha/event/film
-#Accept: application/json
