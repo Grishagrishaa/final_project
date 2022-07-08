@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 public class ConcertService implements IEventService<Concert, SaveConcertDto> {
@@ -29,13 +30,7 @@ public class ConcertService implements IEventService<Concert, SaveConcertDto> {
 
     @Override
     public Concert get(UUID uuid) {
-        Concert concert = null;
-        if(dao.findById(uuid).isPresent()){
-            concert = dao.findById(uuid).get();
-        }else{
-            throw new EntityNotFoundException("INVALID UUID, NOT FOUND");
-        }
-        return concert;
+        return dao.findById(uuid).orElseThrow(() -> new IllegalArgumentException("ENTITY WASN'T FOUND "));
     }
 
     @Override

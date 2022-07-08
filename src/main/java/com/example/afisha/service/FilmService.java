@@ -32,13 +32,7 @@ public class FilmService implements IEventService<Film, SaveFilmDto> {
 
     @Override
     public Film get(UUID uuid) {
-        Film event = null;
-        if(dao.findById(uuid).isPresent()){
-            event = dao.findById(uuid).get();
-        }else{
-            throw new EntityNotFoundException("INVALID ID, NOT FOUND");
-        }
-        return event;
+        return dao.findById(uuid).orElseThrow(() -> new IllegalArgumentException("ENTITY WASN'T FOUND "));
     }
 
     @Override
