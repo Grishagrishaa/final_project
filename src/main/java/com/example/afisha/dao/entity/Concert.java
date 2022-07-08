@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "concert", schema = "events")
+@Table(name = "concerts", schema = "events")
 public class Concert extends Event {
     @Column(nullable = false)
     private UUID category;
@@ -24,13 +24,13 @@ public class Concert extends Event {
         this.category = category;
     }
 
-    public Concert(SaveConcertDto dto) {//MAPPER FROM DTO TO ENTITY
-        super(LocalDateTime.now(), //<-- CREATE DATE
-                dto.getTitle(), dto.getDescription(),
-                dto.getEventDate(), dto.getDateEndOfSale(),
-                dto.getType(), dto.getStatus());
-        this.category = dto.getCategory();
-    }
+//    public Concert(SaveConcertDto dto) {//MAPPER FROM DTO TO ENTITY
+//        super(LocalDateTime.now(), //<-- CREATE DATE
+//                dto.getTitle(), dto.getDescription(),
+//                dto.getEventDate(), dto.getDateEndOfSale(),
+//                dto.getType(), dto.getStatus());
+//        this.category = dto.getCategory();
+//    }
 
     public Concert() {
     }

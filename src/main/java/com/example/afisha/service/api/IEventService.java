@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public interface IEventService<E, D> {
+public interface IEventService<E, D> {//E -> ENTITY, D -> DTO
     void save(E event);//CREATE
 
     E get(UUID uuid);//READ

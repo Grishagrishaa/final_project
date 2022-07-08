@@ -2,14 +2,11 @@ package com.example.afisha.controllers.json;
 
 import com.example.afisha.controllers.api.IEventController;
 import com.example.afisha.dao.entity.Concert;
-import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dto.SaveConcertDto;
-import com.example.afisha.dto.SaveFilmDto;
-import com.example.afisha.predicates.ConcertPredicate;
 import com.example.afisha.service.api.IEventService;
+import com.example.afisha.service.api.IMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +20,14 @@ import java.util.function.Predicate;
 public class ConcertController implements IEventController<Concert, SaveConcertDto> {
     private final IEventService<Concert, SaveConcertDto> service;
     private final Predicate<SaveConcertDto> concertValidate;//
+    private final IMapper<Concert, SaveConcertDto> mapper;
 
-    public ConcertController(IEventService<Concert, SaveConcertDto> service, Predicate<SaveConcertDto> concertValidate) {
+    public ConcertController(IEventService<Concert, SaveConcertDto> service,
+                             Predicate<SaveConcertDto> concertValidate,
+                             IMapper<Concert, SaveConcertDto> mapper) {
         this.service = service;
         this.concertValidate = concertValidate;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{uuid}")
@@ -46,7 +47,7 @@ public class ConcertController implements IEventController<Concert, SaveConcertD
     public void save(@RequestBody SaveConcertDto concertDto){
         if(!concertValidate.test(concertDto)) throw new IllegalArgumentException("FIELDS: TITLE, TYPE, STATUS, EVENT_DATE AND CATEGORY MUST BE FILLED");
 
-        service.save(new Concert(concertDto));
+        service.save(mapper.mapToEntity(concertDto));
     }
 
     @PutMapping("/{uuid}/dt_update/{dt_update}")
@@ -56,9 +57,9 @@ public class ConcertController implements IEventController<Concert, SaveConcertD
 
         service.update(concertDto, uuid, dt_update );
     }
-    /**
-     * PUT SAMPLE
-     * {"title":"ASAP ROCKY","description":null,"event_date":1657152000011,"date_end_of_sale":null,"type":"FILM","status":"DRAFT","category":"b992c037-a0f1-4d99-8e76-ed5c1a931d9a"}
+    /*
+      PUT SAMPLE
+      {"title":"ASAP ROCKY","description":null,"event_date":1657152000011,"date_end_of_sale":null,"type":"FILM","status":"DRAFT","category":"b992c037-a0f1-4d99-8e76-ed5c1a931d9a"}
      */
 
 

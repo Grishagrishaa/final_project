@@ -4,22 +4,23 @@ import com.example.afisha.dao.api.IConcertDao;
 import com.example.afisha.dao.entity.Concert;
 import com.example.afisha.dto.SaveConcertDto;
 import com.example.afisha.service.api.IEventService;
+import com.example.afisha.service.api.IMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @Service
 public class ConcertService implements IEventService<Concert, SaveConcertDto> {
     private final IConcertDao dao;
+    private final IMapper<Concert, SaveConcertDto> mapper;
 
-    public ConcertService(IConcertDao dao) {
+    public ConcertService(IConcertDao dao, IMapper<Concert, SaveConcertDto> mapper) {
         this.dao = dao;
+        this.mapper = mapper;
     }
 
 
@@ -45,14 +46,7 @@ public class ConcertService implements IEventService<Concert, SaveConcertDto> {
         if(!concert.getUpdateDate().equals(updateDate)){
             throw new OptimisticLockException("EVENT WAS ALREADY UPDATED");//OPT LOCK
         }
-
-        if(concertDto.getTitle() != null)concert.setTitle(concertDto.getTitle());
-        if(concertDto.getDescription() != null)concert.setDescription(concertDto.getDescription());
-        if(concertDto.getEventDate() != null)concert.setEventDate(concertDto.getEventDate());
-        if(concertDto.getDateEndOfSale() != null)concert.setDateEndOfSale(concertDto.getDateEndOfSale());//UPDATING DATA
-        if(concertDto.getType() != null)concert.setType(concertDto.getType());
-        if(concertDto.getStatus() != null)concert.setStatus(concertDto.getStatus());
-        if(concertDto.getCategory() != null)concert.setCategory(concertDto.getCategory());
+        mapper.updateEntity(concert, concertDto);
 
         dao.save(concert);//SAVE-UPDATE
     }
