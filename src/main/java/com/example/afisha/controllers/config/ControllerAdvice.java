@@ -1,4 +1,4 @@
-package com.example.afisha.controllers;
+package com.example.afisha.controllers.config;
 
 import com.example.afisha.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;

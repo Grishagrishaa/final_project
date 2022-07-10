@@ -1,4 +1,4 @@
-package com.example.afisha.controllers;
+package com.example.afisha.controllers.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
