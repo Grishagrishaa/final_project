@@ -4,7 +4,9 @@ import com.example.afisha.dao.entity.Event;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
+import com.example.afisha.pagination.MyPage;
 import com.example.afisha.service.api.IEventService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,15 +21,17 @@ import java.util.function.Predicate;
 @RestController
 @RequestMapping("/api/v1/afisha/event")
 public class EventController {
-    private IEventService eventService;
+    private final IEventService eventService;
     private final Predicate<SaveEventDtoFactory> eventValidator;
     private final Predicate<String> urlTypeValidator;
+    private final ModelMapper mapper;
 
     public EventController(IEventService eventService, Predicate<SaveEventDtoFactory> eventValidator,
-                           Predicate<String> urlTypeValidator) {
+                           Predicate<String> urlTypeValidator, ModelMapper mapper) {
         this.eventService = eventService;
         this.eventValidator = eventValidator;
         this.urlTypeValidator = urlTypeValidator;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{type}/{uuid}")
@@ -45,7 +49,7 @@ public class EventController {
     }
 
     @GetMapping("/{type}")
-    public ResponseEntity<Page<? extends Event>> getAll(@PathVariable String type,
+    public ResponseEntity<MyPage<? extends Event>> getAll(@PathVariable String type,
                                                @RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
         String urlType = type.toUpperCase();
@@ -53,7 +57,7 @@ public class EventController {
 
         Page<? extends Event> eventsPage = eventService.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("title")));
 
-        return new ResponseEntity<>(eventsPage, HttpStatus.OK);
+        return new ResponseEntity<MyPage<? extends Event>>(mapper.map(eventsPage, MyPage.class), HttpStatus.OK);
     }
 
     @PostMapping("/{type}")
