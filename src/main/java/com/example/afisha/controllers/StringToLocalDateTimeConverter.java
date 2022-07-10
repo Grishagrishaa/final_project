@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 @Component
 public class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {

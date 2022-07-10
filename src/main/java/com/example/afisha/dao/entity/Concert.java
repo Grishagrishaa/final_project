@@ -1,15 +1,15 @@
 package com.example.afisha.dao.entity;
 
+import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.SaveConcertDto;
+import com.example.afisha.dto.SaveEventDtoFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "concerts", schema = "events")
 public class Concert extends Event {
     @Column(nullable = false)
@@ -24,13 +24,13 @@ public class Concert extends Event {
         this.category = category;
     }
 
-//    public Concert(SaveConcertDto dto) {//MAPPER FROM DTO TO ENTITY
-//        super(LocalDateTime.now(), //<-- CREATE DATE
-//                dto.getTitle(), dto.getDescription(),
-//                dto.getEventDate(), dto.getDateEndOfSale(),
-//                dto.getType(), dto.getStatus());
-//        this.category = dto.getCategory();
-//    }
+    public Concert(SaveEventDtoFactory dto) {//MAPPER FROM DTO TO ENTITY
+        super(LocalDateTime.now(), //<-- CREATE DATE
+                dto.getTitle(), dto.getDescription(),
+                dto.getEventDate(), dto.getDateEndOfSale(),
+                dto.getType(), dto.getStatus());
+        this.category = dto.getCategory();
+    }
 
     public Concert() {
     }

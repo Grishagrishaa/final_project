@@ -1,9 +1,11 @@
 package com.example.afisha.dao.entity;
 
+import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
 import com.example.afisha.dao.entity.utils.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
-public abstract class Event {
+public abstract class Event implements IEvent {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -24,8 +26,7 @@ public abstract class Event {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID uuid;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd | HH:mm:ss.SSS")
     private LocalDateTime createDate;
 
     @Version
@@ -35,14 +36,10 @@ public abstract class Event {
 
     private String title;
     private String description;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy.MM.dd | HH:mm")
     private LocalDateTime eventDate;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy.MM.dd")
     private LocalDateTime dateEndOfSale;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EventType type;

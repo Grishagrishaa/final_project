@@ -2,24 +2,17 @@ package com.example.afisha.dao.entity;
 
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
-import com.example.afisha.dao.entity.utils.LocalDateTimeSerializer;
-import com.example.afisha.dto.SaveFilmDto;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.example.afisha.dto.SaveEventDtoFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "films", schema = "events")
 public class Film extends Event {
     private UUID country;
     private Integer releaseYear;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime releaseDate;
     private Integer duration;
 
@@ -37,16 +30,15 @@ public class Film extends Event {
         this.duration = duration;
     }
 
-    public Film(SaveFilmDto filmDto) {//MAPPER FROM DTO --> ENTITY | CREATE DT_CREATE HERE
-        super(LocalDateTime.now(),
-                filmDto.getTitle(), filmDto.getDescription(),
-                filmDto.getEventDate(),
-                filmDto.getDateEndOfSale(),
-                filmDto.getType(), filmDto.getStatus());
-        this.country = filmDto.getCountry();
-        this.releaseYear = filmDto.getReleaseYear();
-        this.releaseDate = filmDto.getReleaseDate();
-        this.duration = filmDto.getDuration();
+    public Film(SaveEventDtoFactory dto) {//MAPPER FROM DTO TO ENTITY
+        super(LocalDateTime.now(), //<-- CREATE DATE
+                dto.getTitle(), dto.getDescription(),
+                dto.getEventDate(), dto.getDateEndOfSale(),
+                dto.getType(), dto.getStatus());
+        this.country = dto.getCountry();
+        this.releaseYear = dto.getReleaseYear();
+        this.releaseDate = dto.getReleaseDate();
+        this.duration = dto.getDuration();
     }
 
     public Film() {

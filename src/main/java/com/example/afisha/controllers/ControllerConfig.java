@@ -1,6 +1,5 @@
 package com.example.afisha.controllers;
 
-import com.example.afisha.service.mappers.ConcertMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -16,7 +15,6 @@ public class ControllerConfig {
         ObjectMapper mapper = new ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         mapper.registerModule(new JavaTimeModule());
         return mapper;
-
     }
 
     @Bean

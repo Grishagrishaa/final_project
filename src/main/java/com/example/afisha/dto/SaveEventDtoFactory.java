@@ -1,5 +1,9 @@
 package com.example.afisha.dto;
 
+import com.example.afisha.dao.entity.Concert;
+import com.example.afisha.dao.entity.Event;
+import com.example.afisha.dao.entity.Film;
+import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
@@ -10,7 +14,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class SaveFilmDto {
+
+public class SaveEventDtoFactory {
     private String title;
     private String description;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -27,13 +32,15 @@ public class SaveFilmDto {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime releaseDate;
     private Integer duration;
+    private UUID category;
 
-    public SaveFilmDto(String title, String description,
-                       LocalDateTime eventDate, LocalDateTime dateEndOfSale,
-                       EventType type, EventStatus status,
-                       UUID country,
-                       Integer releaseYear, LocalDateTime releaseDate,
-                       Integer duration) {
+    public SaveEventDtoFactory(String title, String description,
+                               LocalDateTime eventDate, LocalDateTime dateEndOfSale,
+                               EventType type, EventStatus status,
+                               UUID country,
+                               Integer releaseYear, LocalDateTime releaseDate,
+                               Integer duration,
+                               UUID category) {
         this.title = title;
         this.description = description;
         this.eventDate = eventDate;
@@ -44,9 +51,10 @@ public class SaveFilmDto {
         this.releaseYear = releaseYear;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.category = category;
     }
 
-    public SaveFilmDto() {
+    public SaveEventDtoFactory() {
     }
 
     public String getTitle() {
@@ -127,5 +135,32 @@ public class SaveFilmDto {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public UUID getCategory() {
+        return category;
+    }
+
+    public void setCategory(UUID category) {
+        this.category = category;
+    }
+
+    public Event getDto(){
+        final IEvent event;
+        if(EventType.FILM.equals(type)){
+            return new Film(LocalDateTime.now(),//<--CreateDate
+                    title, description,
+                    eventDate, dateEndOfSale,
+                    type, status,
+                    country,
+                    releaseYear, releaseDate,
+                    duration);
+        }else {
+            return new Concert(LocalDateTime.now(),//<--CreateDate
+                    title, description,
+                    eventDate, dateEndOfSale,
+                    type, status,
+                    category);
+        }//ДРУГОГО ТИПА БЫТЬ НЕ МОЖЕТ ПОТОМУ ЧТО ПРИ ПОПЫТКЕ ПЕРЕДАТЬ НЕВЕРНЫЙ ТИП ВЫБРОСИТЬСЯ JSON parse error
     }
 }
