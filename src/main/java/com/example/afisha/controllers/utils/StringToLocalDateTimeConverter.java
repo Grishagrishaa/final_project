@@ -1,4 +1,4 @@
-package com.example.afisha.controllers.config;
+package com.example.afisha.controllers.utils;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

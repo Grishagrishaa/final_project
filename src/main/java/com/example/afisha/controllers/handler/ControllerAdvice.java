@@ -1,4 +1,4 @@
-package com.example.afisha.controllers.config;
+package com.example.afisha.controllers.handler;
 
 import com.example.afisha.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
@@ -7,6 +7,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.persistence.OptimisticLockException;
 
@@ -43,12 +44,22 @@ public class ControllerAdvice {
         );
     }
 
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpRequestMethodNotSupportedException e){
         return new ErrorMessage(
                 e.getClass().getSimpleName(),
                 "CHECK URL"
+        );
+    }
+
+    @ExceptionHandler(WebClientResponseException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorMessage handle(WebClientResponseException e){
+        return new ErrorMessage(
+                e.getClass().getSimpleName(),
+                "PROVIDED UUID IS NOT CORRECT"
         );
     }
 }
