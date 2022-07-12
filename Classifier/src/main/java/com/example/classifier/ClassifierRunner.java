@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.example.classifier.dao.api")
-public class ApplicationRunner {
+public class ClassifierRunner {
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationRunner.class, args);
+        SpringApplication.run(ClassifierRunner.class, args);
     }
 
 }

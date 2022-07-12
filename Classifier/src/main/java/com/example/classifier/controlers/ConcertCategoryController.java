@@ -47,7 +47,7 @@ public class ConcertCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody SaveConcertCategoryDto categoryDto){
-        if(!validator.test(categoryDto)) throw new IllegalArgumentException("TITLE MUST BE FILLED");
+        validator.test(categoryDto);
         service.save(mapper.map(categoryDto, ConcertCategory.class));
     }
 }

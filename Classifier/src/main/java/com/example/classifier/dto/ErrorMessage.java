@@ -1,20 +1,37 @@
 package com.example.classifier.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorMessage {
-    private String exceptionType;
+    private String logref;
+    private String field;
     private String message;
 
-    public ErrorMessage(String exceptionType, String message) {
-        this.exceptionType = exceptionType;
+    public ErrorMessage(String message) {
+        this.logref = "error";
         this.message = message;
     }
 
-    public String getExceptionType() {
-        return exceptionType;
+    public ErrorMessage(String field, String message) {
+        this.field = field;
+        this.message = message;
     }
 
-    public void setExceptionType(String exceptionType) {
-        this.exceptionType = exceptionType;
+    public String getLogref() {
+        return logref;
+    }
+
+    public void setLogref(String logref) {
+        this.logref = logref;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 
     public String getMessage() {

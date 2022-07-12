@@ -46,7 +46,7 @@ public class CountryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody SaveCountryDto countryDto){
-        if(!validator.test(countryDto)) throw new IllegalArgumentException("TITLE AND DESCRIPTION MUST BE FILLED");
+        validator.test(countryDto);
 
         service.save(mapper.map(countryDto, Country.class));
     }

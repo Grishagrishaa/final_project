@@ -4,18 +4,18 @@ import java.util.List;
 
 public class StructuredError {
     private final String logref;
-    private final List<ErrorMessage>  errorMessagesList;
+    private final List<ErrorMessage> errors;
 
-    public StructuredError(List<ErrorMessage> errorMessagesList) {
+    public StructuredError(List<ErrorMessage> errors) {
         this.logref = "structured_error";
-        this.errorMessagesList = errorMessagesList;
+        this.errors = errors;
     }
 
     public String getLogref() {
         return logref;
     }
 
-    public List<ErrorMessage> getErrorMessagesList() {
-        return errorMessagesList;
+    public List<ErrorMessage> getErrors() {
+        return errors;
     }
 }

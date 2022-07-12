@@ -1,7 +1,14 @@
 package com.example.afisha;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.*;
+import java.util.Properties;
+
 public class TestMain {
-    public static void main(String[] args) {
-        System.out.println("b");
+
+    static String aboba;
+    public static void main(String[] args) throws IOException {
+
     }
 }
