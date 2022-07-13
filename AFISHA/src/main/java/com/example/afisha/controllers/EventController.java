@@ -1,6 +1,7 @@
 package com.example.afisha.controllers;
 
 import com.example.afisha.dao.entity.Event;
+import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
@@ -20,18 +21,19 @@ import java.util.function.Predicate;
 
 //TODO MULTIPLE ERROR RESPONSE
 //VALIDATOR AS EXTERNAL CLASS
+//CONVERTER SERVICE
 @RestController
 @RequestMapping("/api/v1/afisha/event")
 public class EventController {
     private final IEventService eventService;
-    private final Predicate<SaveEventDtoFactory> eventValidator;
+    private final Predicate<Film> filmValidator;
     private final Predicate<String> urlTypeValidator;
     private final ModelMapper mapper;
 
-    public EventController(IEventService eventService, Predicate<SaveEventDtoFactory> eventValidator,
+    public EventController(IEventService eventService, Predicate<Film> filmValidator,
                            Predicate<String> urlTypeValidator, ModelMapper mapper) {
         this.eventService = eventService;
-        this.eventValidator = eventValidator;
+        this.filmValidator = filmValidator;
         this.urlTypeValidator = urlTypeValidator;
         this.mapper = mapper;
     }
@@ -67,9 +69,6 @@ public class EventController {
     public void createEvent(@PathVariable String type, @RequestBody SaveEventDtoFactory dtoFactory){
         String urlType = type.toUpperCase();
         urlTypeValidator.test(urlType);//чек правильного урла
-        if (!eventValidator.test(dtoFactory)){//чек обязательных полей
-            throw new IllegalArgumentException("FIELDS: TITLE, TYPE, STATUS, EVENT_DATE AND CATEGORY OR COUNTRY MUST BE FILLED");
-        }
 
         if (!EventType.valueOf(urlType).equals(dtoFactory.getType())){//сравнение типов в боди и урле
             throw new IllegalArgumentException("TYPES DOES NOT MATCH");
@@ -85,9 +84,6 @@ public class EventController {
 
         String urlType = type.toUpperCase();
         urlTypeValidator.test(urlType);//чек правильного урла
-        if (!eventValidator.test(dtoFactory)){//чек обязательных полей
-            throw new IllegalArgumentException("FIELDS: TITLE, TYPE, STATUS, EVENT_DATE AND CATEGORY OR COUNTRY MUST BE FILLED");
-        }
 
         if (!EventType.valueOf(urlType).equals(dtoFactory.getType())){//сравнение типов в боди и урле
             throw new IllegalArgumentException("TYPES DOES NOT MATCH");

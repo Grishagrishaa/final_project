@@ -1,6 +1,8 @@
 package com.example.afisha.controllers.handler;
 
 import com.example.afisha.dto.ErrorMessage;
+import com.example.afisha.dto.StructuredError;
+import com.example.afisha.exceptions.MyValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -50,11 +52,9 @@ public class ControllerAdvice {
         );
     }
 
-    @ExceptionHandler(WebClientResponseException.class)
+    @ExceptionHandler(MyValidationException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(WebClientResponseException e){
-        return new ErrorMessage(
-                "PROVIDED UUID IS NOT CORRECT"
-        );
+    public StructuredError handle(MyValidationException e){
+        return new StructuredError(e.getErrorMessages());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.afisha.dto;
 
-
+//FOR HTTP REQUEST TO CLASSIFIER
 public class CountryTest {
 
     private String title;

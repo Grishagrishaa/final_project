@@ -7,33 +7,35 @@ import com.example.afisha.dao.entity.Event;
 import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.ConcertCategoryTest;
-import com.example.afisha.dto.CountryTest;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.service.api.IEventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 @Service
 public class EventService implements IEventService {
     private final IEventFilmDao filmDao;
     private final IEventConcertDao concertDao;
     private final ModelMapper mapper;
-    private final WebClient WebClient;
+    private final Predicate<Film> filmValidator;
+    private final Predicate<Concert> concertValidator;
+
+
 
     public EventService(IEventFilmDao filmDao, IEventConcertDao concertDao,
-                        ModelMapper mapper, WebClient WebClient) {
+                        ModelMapper mapper, Predicate<Film> filmValidator, Predicate<Concert> concertValidator) {
         this.filmDao = filmDao;
         this.concertDao = concertDao;
         this.mapper = mapper;
-        this.WebClient = WebClient;
+        this.filmValidator = filmValidator;
+        this.concertValidator = concertValidator;
     }
 
     @Override
@@ -41,12 +43,12 @@ public class EventService implements IEventService {
         switch (event.getType()){
             case FILM:
                 Film film = (Film) event;
-                checkCountry(film.getCountry());
+                filmValidator.test(film);
                 filmDao.save(film);
                 break;
             case CONCERT:
                 Concert concert = (Concert) event;
-                checkCategory(concert.getCategory());
+                concertValidator.test(concert);
                 concertDao.save(concert);
                 break;
         }
@@ -79,7 +81,7 @@ public class EventService implements IEventService {
                 throw new OptimisticLockException("CONCERT WAS ALREADY UPDATED");
             }
 
-            checkCategory(eventDto.getCategory());//UUID VALIDATION
+            concertValidator.test(concert);
 
             mapper.map(eventDto, concert);
 
@@ -91,26 +93,11 @@ public class EventService implements IEventService {
                 throw new OptimisticLockException("FILM WAS ALREADY UPDATED");
             }
 
-            checkCountry(eventDto.getCountry());//UUID VALIDATION
+            filmValidator.test(film);
 
             mapper.map(eventDto, film);
 
             filmDao.save(film);
         }
     }
-
-    public void checkCountry(UUID id) {
-        WebClient
-                .get()
-                .uri(String.join("", "/country/", id.toString()))
-                .retrieve().bodyToMono(CountryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
-    }
-
-    public void checkCategory(UUID id) {
-        WebClient
-                .get()
-                .uri(String.join("", "/concert/category/", id.toString()))
-                .retrieve().bodyToMono(ConcertCategoryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
-    }
-
 }

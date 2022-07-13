@@ -1,5 +1,6 @@
 package com.example.afisha.dto;
 
+//FOR HTTP REQUEST TO CLASSIFIER
 public class ConcertCategoryTest {
     private String title;
 

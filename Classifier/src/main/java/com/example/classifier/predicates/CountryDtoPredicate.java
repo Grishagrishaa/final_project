@@ -28,10 +28,8 @@ public class CountryDtoPredicate implements Predicate<SaveCountryDto> {
         int minTitleLength = Integer.parseInt(env.getProperty("minTitleLength"));
         int maxTitleLength = Integer.parseInt(env.getProperty("maxTitleLength"));
 
-        if(title != null && title.length() > minTitleLength && title.length() < maxTitleLength){
-            return true;
-        }else{
-            errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + minTitleLength  +
+        if(title == null || title.length() < minTitleLength || title.length() > maxTitleLength){
+            errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + --minTitleLength  +
                     " AND LESS THAN "  + maxTitleLength));
         }
 
@@ -40,14 +38,15 @@ public class CountryDtoPredicate implements Predicate<SaveCountryDto> {
         int minDescriptionLength = Integer.parseInt(env.getProperty("minDescriptionLength"));
         int maxDescriptionLength = Integer.parseInt(env.getProperty("maxDescriptionLength"));
 
-        if(description != null && description.length() > minDescriptionLength && description.length() < maxDescriptionLength){
-            return true;
-        }else {
+        if(description == null || description.length() < minDescriptionLength || description.length() > maxDescriptionLength){
             errorMessages.add(new ErrorMessage("DESCRIPTION", "DESCRIPTION MUST BE GREATER THAN " + minDescriptionLength +
                     " AND LESS THAN " + maxDescriptionLength));
         }
 
+        if(!errorMessages.isEmpty()){
+            throw new MyValidationException(errorMessages);
+        }
 
-        throw new MyValidationException(errorMessages);
+        return true;
     }
 }
