@@ -42,11 +42,19 @@ public class ConcertPredicate implements Predicate<Concert> {
         checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
         checkCategory(concert.getCategory());
 
+
         if(!errorMessages.isEmpty()){
             throw new MyValidationException(errorMessages);
         }
 
         return true;
+    }
+
+    private void checkLength(String fieldTitle, String testString, Integer min, Integer max){
+        if (testString == null || testString.length() < min || testString.length() > max) {
+            errorMessages.add(new ErrorMessage(fieldTitle.toUpperCase(), fieldTitle.toUpperCase() + " MUST BE GREATER THAN " + min +
+                    " AND LESS THAN " + max));
+        }
     }
 
     private void checkTitle(String title){

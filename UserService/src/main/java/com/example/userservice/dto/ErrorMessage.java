@@ -1,4 +1,4 @@
-package com.example.afisha.dto;
+package com.example.userservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -76,26 +76,28 @@ public class EventService implements IEventService {
     public void update(SaveEventDtoFactory eventDto, UUID uuid, LocalDateTime updateDate) {
         if (EventType.CONCERT.equals(eventDto.getType())){
             Concert concert = (Concert) get(uuid, eventDto.getType());
+            Concert concertUpdate = (Concert) eventDto.getEntity();
 
             if(!concert.getUpdateDate().isEqual(updateDate)){
                 throw new OptimisticLockException("CONCERT WAS ALREADY UPDATED");
             }
 
-            concertValidator.test(concert);
+            concertValidator.test(concertUpdate);
 
-            mapper.map(eventDto, concert);
+            mapper.map(concertUpdate, concert);
 
             concertDao.save(concert);
         }else{
             Film film = (Film) get(uuid, eventDto.getType());
+            Film filmUpdate = (Film) eventDto.getEntity();
 
             if(!film.getUpdateDate().isEqual(updateDate)){
                 throw new OptimisticLockException("FILM WAS ALREADY UPDATED");
             }
 
-            filmValidator.test(film);
+            filmValidator.test(filmUpdate);
 
-            mapper.map(eventDto, film);
+            mapper.map(filmUpdate, film);
 
             filmDao.save(film);
         }

@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 @Component
 public class CountryDtoPredicate implements Predicate<SaveCountryDto> {
     private final Environment env;
-    List<ErrorMessage> errorMessages;
+    private List<ErrorMessage> errorMessages;
 
     public CountryDtoPredicate(Environment env) {
         this.env = env;

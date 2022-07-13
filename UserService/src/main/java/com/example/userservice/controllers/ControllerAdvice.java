@@ -1,20 +1,16 @@
-package com.example.afisha.controllers.handler;
+package com.example.userservice.controllers;
 
-import com.example.afisha.dao.entity.enums.EventStatus;
-import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.ErrorMessage;
-import com.example.afisha.dto.StructuredError;
-import com.example.afisha.exceptions.MyValidationException;
+import com.example.userservice.dto.ErrorMessage;
+import com.example.userservice.dto.StructuredError;
+import com.example.userservice.exceptions.MyValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.persistence.OptimisticLockException;
-
 import java.util.Arrays;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -43,9 +39,7 @@ public class ControllerAdvice {
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpMessageNotReadableException e){
         return new ErrorMessage(
-                "PROVIDED UNSUPPORTED TYPE OR STATUS, SUPPORTED STATUS: " +
-                        Arrays.toString(EventStatus.values()) + ", TYPES: " +
-                        Arrays.toString(EventType.values())
+                "PROVIDED UNSUPPORTED ROLE OR STATUS"
         );
     }
 

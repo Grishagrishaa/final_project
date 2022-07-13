@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.OptimisticLockException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
+//TODO CONNECTION REFUSED EXCEPTION
 @RestControllerAdvice
 public class ControllerAdvice {
 

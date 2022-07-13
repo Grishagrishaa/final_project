@@ -1,4 +1,4 @@
-package com.example.classifier.controlers.config;
+package com.example.userservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -7,8 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+import java.util.concurrent.TimeUnit;
+
 @Configuration
-public class ControllerConfig {
+public class ApplicationConfig {
 
     @Bean(name = "objectMapper")
     public ObjectMapper objectMapper(){

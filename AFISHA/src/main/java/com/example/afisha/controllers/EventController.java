@@ -74,7 +74,7 @@ public class EventController {
             throw new IllegalArgumentException("TYPES DOES NOT MATCH");
         }
 
-        eventService.save(dtoFactory.getDto());
+        eventService.save(dtoFactory.getEntity());
     }
 
     @PutMapping("/{type}/{uuid}/dt_update/{dt_update}")

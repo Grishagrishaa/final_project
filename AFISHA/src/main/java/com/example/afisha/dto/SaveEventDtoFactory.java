@@ -11,7 +11,6 @@ import com.example.afisha.dao.entity.utils.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -152,7 +151,7 @@ public class SaveEventDtoFactory {
         this.category = category;
     }
 
-    public Event getDto(){
+    public Event getEntity(){
         final IEvent event;
         if(EventType.FILM.equals(type)){
             return new Film(LocalDateTime.now(),//<--CreateDate
