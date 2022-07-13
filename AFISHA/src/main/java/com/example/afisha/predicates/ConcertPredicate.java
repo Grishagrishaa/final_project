@@ -65,7 +65,7 @@ public class ConcertPredicate implements Predicate<Concert> {
         int minDescriptionLength = Integer.parseInt(env.getProperty("minDescriptionLength"));
         int maxDescriptionLength = Integer.parseInt(env.getProperty("maxDescriptionLength"));
 
-        if (description == null || description.length() > minDescriptionLength || description.length() < maxDescriptionLength) {
+        if (description == null || description.length() < minDescriptionLength || description.length() > maxDescriptionLength) {
             errorMessages.add(new ErrorMessage("DESCRIPTION", "DESCRIPTION MUST BE GREATER THAN " + minDescriptionLength +
                     " AND LESS THAN " + maxDescriptionLength));
         }
@@ -73,17 +73,6 @@ public class ConcertPredicate implements Predicate<Concert> {
 
     private void checkFutureDate(LocalDateTime date, String fieldName){
         if (date == null || !date.isAfter(LocalDateTime.now())) {
-            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName.toUpperCase() + " MUST BE IN FUTURE"));
-        }
-    }
-
-    private void checkFutureDate(Integer longDate, String fieldName){
-        if (longDate == null){//TO AVOID NULL POINTER BELOW
-            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName.toUpperCase() + " MUST BE PROVIDED "));
-            return;
-        }
-        LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(longDate), ZoneId.systemDefault());
-        if (!date.isAfter(LocalDateTime.now())) {
             errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName.toUpperCase() + " MUST BE IN FUTURE"));
         }
     }

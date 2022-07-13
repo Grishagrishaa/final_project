@@ -66,7 +66,7 @@ public class FilmPredicate implements Predicate<Film> {
         int minDescriptionLength = Integer.parseInt(env.getProperty("minDescriptionLength"));
         int maxDescriptionLength = Integer.parseInt(env.getProperty("maxDescriptionLength"));
 
-        if (description == null || description.length() > minDescriptionLength || description.length() < maxDescriptionLength) {
+        if (description == null || description.length() < minDescriptionLength || description.length() > maxDescriptionLength) {
             errorMessages.add(new ErrorMessage("DESCRIPTION", "DESCRIPTION MUST BE GREATER THAN " + minDescriptionLength +
                     " AND LESS THAN " + maxDescriptionLength));
         }
@@ -74,18 +74,14 @@ public class FilmPredicate implements Predicate<Film> {
 
     private void checkFutureDate(LocalDateTime date, String fieldName){
         if (date == null || !date.isAfter(LocalDateTime.now())) {
-            errorMessages.add(new ErrorMessage(fieldName, fieldName + " MUST BE IN FUTURE"));
+            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName.toUpperCase() + " MUST BE IN FUTURE"));
         }
     }
 
-    private void checkFutureDate(Integer longDate, String fieldName){
-        if (longDate == null){//TO AVOID NULL POINTER BELOW
-            errorMessages.add(new ErrorMessage(fieldName, fieldName + " MUST BE PROVIDED "));
-            return;
-        }
-        LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(longDate), ZoneId.systemDefault());
-        if (!date.isAfter(LocalDateTime.now())) {
-            errorMessages.add(new ErrorMessage(fieldName, fieldName + " MUST BE IN FUTURE"));
+    private void checkFutureDate(Integer year, String fieldName){
+
+        if (year < LocalDateTime.now().getYear()) {
+            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName + " CANNOT BE IN THE PAST YEAR"));
         }
     }
 
@@ -106,7 +102,7 @@ public class FilmPredicate implements Predicate<Film> {
         int maxDuration = Integer.parseInt(env.getProperty("maxDuration"));
 
         if(duration == null || duration < minDuration || duration > maxDuration){
-            errorMessages.add(new ErrorMessage("DURATION", "DURATION MUST BE GRETER + " + minDuration +
+            errorMessages.add(new ErrorMessage("DURATION", "DURATION MUST BE GRETER " + minDuration +
                     " AND LESS THAN " + maxDuration));
         }
     }
