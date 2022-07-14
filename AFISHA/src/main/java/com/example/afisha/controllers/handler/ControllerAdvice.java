@@ -15,9 +15,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import javax.persistence.OptimisticLockException;
 
+import java.net.ConnectException;
 import java.util.Arrays;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -43,12 +45,18 @@ public class ControllerAdvice {
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpMessageNotReadableException e){
         return new ErrorMessage(
-                "PROVIDED UNSUPPORTED TYPE OR STATUS, SUPPORTED STATUS: " +
-                        Arrays.toString(EventStatus.values()) + ", TYPES: " +
-                        Arrays.toString(EventType.values())
+                e.getLocalizedMessage()
         );
     }
 
+
+    @ExceptionHandler(ConnectException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ErrorMessage handle(ConnectException e){
+        return new ErrorMessage(
+                "CLASSIFIER SERVICE ISN'T RESPONDING"
+        );
+    }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(BAD_REQUEST)

@@ -16,8 +16,4 @@ public interface IUserService {
     void create(User user);
 
     void update(UUID uuid, LocalDateTime updateDate, SaveUserDto userCreateDto);
-
-    Boolean checkNick(String nick);
-
-    Boolean checkMail(String mail);
 }
