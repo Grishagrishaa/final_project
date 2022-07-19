@@ -1,6 +1,4 @@
-package com.example.userservice.exceptions;
-
-import com.example.userservice.dto.ErrorMessage;
+package com.example.userservice.dto;
 
 import java.util.List;
 
@@ -10,8 +8,6 @@ public class MyValidationException extends RuntimeException {
     public MyValidationException(List<ErrorMessage> errorMessages) {
         this.errorMessages = errorMessages;
     }
-
-
 
     public List<ErrorMessage> getErrorMessages() {
         return errorMessages;

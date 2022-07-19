@@ -20,7 +20,6 @@ public class CountryService implements IClassifierService<Country> {
 
     @Override
     public void save(Country country) {
-        country.setCreateDate(LocalDateTime.now());
         dao.save(country);
     }
 

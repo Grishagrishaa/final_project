@@ -1,61 +1,96 @@
 package com.example.userservice.controllers;
 
-import com.example.userservice.converters.UserPageToReadUsersDtoMyPage;
+import com.example.userservice.converters.SignDtoToSaveDtoConverter;
 import com.example.userservice.dao.entity.User;
-import com.example.userservice.dto.ReadUserDto;
-import com.example.userservice.dto.SaveUserDto;
+import com.example.userservice.dto.users.LoginDto;
+import com.example.userservice.dto.users.SaveUserDto;
+import com.example.userservice.dto.users.SignDto;
 import com.example.userservice.pagination.MyPage;
-import com.example.userservice.service.api.IUserService;
+import com.example.userservice.service.UserHolder;
+import com.example.userservice.service.UserService;
+import com.example.userservice.utils.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.*;
+
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
-    private final IUserService service;
     private final ModelMapper mapper;
-    private final Converter<Page<User>, MyPage<ReadUserDto>> pageConverter;
+    private final SignDtoToSaveDtoConverter toSaveDto;
+    private final UserService service;
+    private final UserHolder holder;
+    private final PasswordEncoder encoder;
 
-    public UserController(IUserService service, ModelMapper mapper, Converter<Page<User>, MyPage<ReadUserDto>> pageConverter) {
-        this.service = service;
+    public UserController(ModelMapper mapper, SignDtoToSaveDtoConverter toSaveDto,
+                          UserService service,
+                          UserHolder holder,
+                          PasswordEncoder encoder) {
         this.mapper = mapper;
-        this.pageConverter = pageConverter;
+        this.toSaveDto = toSaveDto;
+        this.service = service;
+        this.holder = holder;
+        this.encoder = encoder;
     }
-
-
-    @GetMapping("/{uuid}")
-    public ResponseEntity<ReadUserDto> get(@PathVariable UUID uuid){
-        return new ResponseEntity<>(mapper.map(service.get(uuid), ReadUserDto.class), HttpStatus.OK);
+    @PostMapping()
+    @ResponseStatus(CREATED)
+    private void create(@RequestBody SaveUserDto dto){
+        service.createUser(dto);
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MyPage<ReadUserDto>> getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
-                                                      @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
-
-        return new ResponseEntity<>(pageConverter.convert(service.getAll(PageRequest.of(page, size, Sort.by("nick")))),
-                                    HttpStatus.OK);
+    public ResponseEntity getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
+                                 @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
+        return new ResponseEntity<>(mapper.map(
+                service.loadAll(PageRequest.of(page, size)),
+                MyPage.class),
+                OK);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody SaveUserDto userDto){
-        service.create(mapper.map(userDto, User.class));
+    @GetMapping("/{uuid}")
+    public ResponseEntity<User> get(@PathVariable UUID uuid){
+        return new ResponseEntity<>(service.get(uuid), OK);
     }
 
     @PutMapping("/{uuid}/dt_update/{dt_update}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void update(@PathVariable UUID uuid, @PathVariable LocalDateTime dt_update,
-                       @RequestBody SaveUserDto userDto){
-        service.update(uuid, dt_update, userDto);
+    @ResponseStatus(OK)
+    public void update(@PathVariable UUID uuid, @PathVariable LocalDateTime dt_update, @RequestBody SaveUserDto userDto){
+        service.updateUser(uuid, dt_update, userDto);
     }
+
+
+
+
+    @PostMapping("/registration")
+    @ResponseStatus(CREATED)
+    public void registration(@RequestBody SignDto dto){
+        service.createUser(toSaveDto.convert(dto));
+    }
+
+
+
+    @GetMapping("/me")
+    public UserDetails details(){
+        return holder.getUser();
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String login(@RequestBody LoginDto loginDto){
+        UserDetails details = service.loadUserByUsername(loginDto.getNick());
+
+        if(!encoder.matches(loginDto.getPassword(), details.getPassword())){
+            throw new IllegalArgumentException("Пароль неверный");
+        }
+
+        return JwtTokenUtil.generateAccessToken(details.getUsername());
+    }
+
 }

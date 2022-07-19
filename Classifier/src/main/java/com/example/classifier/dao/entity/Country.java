@@ -43,6 +43,8 @@ public class Country {
     }
 
     public Country() {
+            this.createDate = LocalDateTime.now();
+
     }
 
     public UUID getUuid() {

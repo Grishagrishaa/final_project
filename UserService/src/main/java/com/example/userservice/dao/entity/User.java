@@ -1,21 +1,27 @@
 package com.example.userservice.dao.entity;
 
-import com.example.userservice.dao.entity.enums.UserRole;
-import com.example.userservice.dao.entity.enums.UserStatus;
+import com.example.userservice.dao.entity.enums.EStatus;
 import com.example.userservice.dao.entity.utils.LocalDateTimeDeserializer;
 import com.example.userservice.dao.entity.utils.LocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
-@Table(name = "users", schema = "users")
-public class User {
+
+@Table(name = "users", schema = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "nick", name = "nickConstraint"),
+        @UniqueConstraint(columnNames = "mail", name = "emailConstraint")
+})
+@EntityListeners(AuditingEntityListener.class)
+public class User{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -24,7 +30,7 @@ public class User {
     )
     private UUID uuid;
 
-
+    @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd | HH:mm:ss.SSS")
     private LocalDateTime createDate;
 
@@ -33,18 +39,23 @@ public class User {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateDate;
 
-
     private String mail;
     private String nick;
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
+
+    @Enumerated(value = EnumType.STRING)
+    private EStatus status;
 
     private String password;
 
     public User() {
-        this.createDate = LocalDateTime.now();
     }
 
     public UUID getUuid() {
@@ -87,19 +98,19 @@ public class User {
         this.nick = nick;
     }
 
-    public UserRole getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-    public UserStatus getStatus() {
+    public EStatus getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(EStatus status) {
         this.status = status;
     }
 

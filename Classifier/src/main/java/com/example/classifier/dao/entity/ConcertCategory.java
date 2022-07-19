@@ -40,6 +40,7 @@ public class ConcertCategory {
     }
 
     public ConcertCategory() {
+        this.createDate = LocalDateTime.now();
     }
 
     public ConcertCategory(SaveConcertCategoryDto dto) {

@@ -63,6 +63,7 @@ public abstract class Event implements IEvent {
     public Event() {
     }
 
+
     public UUID getUuid() {
         return uuid;
     }

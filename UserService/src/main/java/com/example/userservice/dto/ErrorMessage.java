@@ -8,7 +8,7 @@ public class ErrorMessage {
     private String field;
     private String message;
 
-    public ErrorMessage(String message) {//SINGLE ERROR RESPONSE
+    public ErrorMessage(String message) {
         this.logref = "error";
         this.message = message;
     }

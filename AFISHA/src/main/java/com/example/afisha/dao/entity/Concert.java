@@ -4,6 +4,7 @@ import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "concerts", schema = "events")
+@EntityListeners(AuditingEntityListener.class)
 public class Concert extends Event {
     @Column(nullable = false)
     private UUID category;
@@ -24,13 +26,6 @@ public class Concert extends Event {
         this.category = category;
     }
 
-    public Concert(SaveEventDtoFactory dto) {//MAPPER FROM DTO TO ENTITY
-        super(LocalDateTime.now(), //<-- CREATE DATE
-                dto.getTitle(), dto.getDescription(),
-                dto.getEventDate(), dto.getDateEndOfSale(),
-                dto.getType(), dto.getStatus());
-        this.category = dto.getCategory();
-    }
 
     public Concert() {
     }
