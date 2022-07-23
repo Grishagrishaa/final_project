@@ -1,5 +1,7 @@
 package com.example.userservice.dto;
 
+import com.example.userservice.dto.errors.ErrorMessage;
+
 import java.util.List;
 
 public class MyValidationException extends RuntimeException {

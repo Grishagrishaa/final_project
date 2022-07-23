@@ -1,6 +1,6 @@
 package com.example.classifier.exceptions;
 
-import com.example.classifier.dto.ErrorMessage;
+import com.example.classifier.dto.errors.ErrorMessage;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.example.userservice.converters;
 
 import com.example.userservice.dao.entity.User;
 import com.example.userservice.dao.entity.enums.EStatus;
-import com.example.userservice.service.impl.UserDetailsUser;
+import com.example.userservice.security.UserDetailsUser;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;

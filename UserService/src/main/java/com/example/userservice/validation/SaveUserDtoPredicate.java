@@ -1,14 +1,11 @@
 package com.example.userservice.validation;
 
-import com.example.userservice.dto.ErrorMessage;
+import com.example.userservice.dto.errors.ErrorMessage;
 import com.example.userservice.dto.MyValidationException;
-import com.example.userservice.dto.users.LoginDto;
 import com.example.userservice.dto.users.SaveUserDto;
-import com.example.userservice.dto.users.SignDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

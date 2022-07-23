@@ -1,6 +1,6 @@
 package com.example.classifier.controlers;
 
-import com.example.classifier.pagination.MyPage;
+import com.example.classifier.controlers.pagination.MyPage;
 import com.example.classifier.dao.entity.Country;
 import com.example.classifier.dto.SaveCountryDto;
 import com.example.classifier.service.api.IClassifierService;

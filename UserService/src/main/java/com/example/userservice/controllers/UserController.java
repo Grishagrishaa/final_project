@@ -1,20 +1,18 @@
 package com.example.userservice.controllers;
 
-import com.example.userservice.converters.SignDtoToSaveDtoConverter;
 import com.example.userservice.dao.entity.User;
 import com.example.userservice.dto.JwtResponse;
 import com.example.userservice.dto.users.LoginDto;
 import com.example.userservice.dto.users.SaveUserDto;
 import com.example.userservice.dto.users.SignDto;
-import com.example.userservice.pagination.MyPage;
-import com.example.userservice.service.UserHolder;
+import com.example.userservice.controllers.pagination.MyPage;
+import com.example.userservice.security.UserHolder;
 import com.example.userservice.service.UserService;
-import com.example.userservice.utils.JwtTokenUtil;
+import com.example.userservice.security.utils.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;

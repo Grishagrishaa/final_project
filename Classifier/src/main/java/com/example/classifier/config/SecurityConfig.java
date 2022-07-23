@@ -1,7 +1,7 @@
-package com.example.userservice.config;
+package com.example.classifier.config;
 
-import com.example.userservice.dao.entity.enums.ERole;
-import com.example.userservice.controllers.filters.JwtFilter;
+import com.example.classifier.controlers.filter.JwtFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtFilter filter;
-    private static final String ADMIN_ENDPOINT = "/api/v1/users/**";
-    private static final String[] PUBLIC_ENDPOINTS = {"/api/v1/users/login","/api/v1/users/registration"};
-    private static final String AUTHENTICATED = "/api/v1/users/me";
+    private static final String AUTHENTICATED_ENDPOINTS = "/api/v1/classifier/**";
 
     public SecurityConfig(JwtFilter filter) {
         this.filter = filter;
@@ -44,9 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers().permitAll()
-                .antMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .antMatchers(AUTHENTICATED).authenticated()
-                .antMatchers(ADMIN_ENDPOINT).hasAuthority(ERole.ADMIN.name())
+                .antMatchers(HttpMethod.GET, AUTHENTICATED_ENDPOINTS).authenticated()
+                .antMatchers(HttpMethod.POST, AUTHENTICATED_ENDPOINTS).hasAuthority("ADMIN")
+
 
                 .anyRequest().authenticated();
 
