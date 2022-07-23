@@ -1,35 +1,49 @@
-package com.example.afisha.predicates;
+package com.example.afisha.validation;
 
 import com.example.afisha.dao.entity.Concert;
-import com.example.afisha.dao.entity.Film;
-import com.example.afisha.dto.ConcertCategoryTest;
-import com.example.afisha.dto.CountryTest;
-import com.example.afisha.dto.ErrorMessage;
+import com.example.afisha.dto.uuidTest.ConcertCategoryTest;
+import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.exceptions.MyValidationException;
-import org.springframework.core.env.Environment;
+import com.example.afisha.security.UserHolder;
+import com.example.afisha.security.utils.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 // В СЛУЧАЕ НЕВАЛИДНОГО ENUM - JSON PARSE ERROR(SINGLE)
 
 @Component
 public class ConcertPredicate implements Predicate<Concert> {
-    private final  Environment env;
+    @Value("${app.minTitleLength}")
+    private Integer minTitleLength;
+    @Value("${app.maxTitleLength}")
+    private Integer maxTitleLength;
+    @Value("${app.minDescriptionLength}")
+    private Integer minDescriptionLength;
+    @Value("${app.maxDescriptionLength}")
+    private Integer maxDescriptionLength;
+    @Value("${app.minAuthorLength}")
+    private Integer minAuthorLength;
+    @Value("${app.maxAuthorLength}")
+    private Integer maxAuthorLength;
+
+
     private final WebClient WebClient;
     private List<ErrorMessage> errorMessages;
+    private final UserHolder userHolder;
 
-    public ConcertPredicate(Environment env, WebClient webClient) {
-        this.env = env;
+    public ConcertPredicate(WebClient webClient, UserHolder userHolder) {
         WebClient = webClient;
+        this.userHolder = userHolder;
     }
 
     @Override
@@ -41,6 +55,7 @@ public class ConcertPredicate implements Predicate<Concert> {
         checkFutureDate(concert.getEventDate(), "EVENT_DATE");
         checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
         checkCategory(concert.getCategory());
+        checkAuthor(concert.getAuthor());
 
 
         if(!errorMessages.isEmpty()){
@@ -50,17 +65,7 @@ public class ConcertPredicate implements Predicate<Concert> {
         return true;
     }
 
-    private void checkLength(String fieldTitle, String testString, Integer min, Integer max){
-        if (testString == null || testString.length() < min || testString.length() > max) {
-            errorMessages.add(new ErrorMessage(fieldTitle.toUpperCase(), fieldTitle.toUpperCase() + " MUST BE GREATER THAN " + min +
-                    " AND LESS THAN " + max));
-        }
-    }
-
     private void checkTitle(String title){
-
-        int minTitleLength = Integer.parseInt(env.getProperty("minTitleLength"));
-        int maxTitleLength = Integer.parseInt(env.getProperty("maxTitleLength"));
 
         if (title == null || title.length() < minTitleLength || title.length() > maxTitleLength) {
             errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + minTitleLength +
@@ -69,9 +74,6 @@ public class ConcertPredicate implements Predicate<Concert> {
     }
 
     private void checkDescription(String description){
-
-        int minDescriptionLength = Integer.parseInt(env.getProperty("minDescriptionLength"));
-        int maxDescriptionLength = Integer.parseInt(env.getProperty("maxDescriptionLength"));
 
         if (description == null || description.length() < minDescriptionLength || description.length() > maxDescriptionLength) {
             errorMessages.add(new ErrorMessage("DESCRIPTION", "DESCRIPTION MUST BE GREATER THAN " + minDescriptionLength +
@@ -90,11 +92,20 @@ public class ConcertPredicate implements Predicate<Concert> {
             WebClient
                     .get()
                     .uri(String.join("", "/concert/category/", id.toString()))
+                    .header(AUTHORIZATION, ("Bearer ".concat(
+                            JwtTokenUtil.generateAccessToken(userHolder.getUser().getUsername()))))
                     .retrieve().bodyToMono(ConcertCategoryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
-            errorMessages.add(new ErrorMessage("CATEGORY", "CATEGORY WASN'T FOUND, CHECK URL"));
+            errorMessages.add(new ErrorMessage("CATEGORY", "CATEGORY WASN'T FOUND, CHECK URL | " +
+                    e.getMessage()));
         }
+    }
 
+    private void checkAuthor(String author){
+        if(author == null || author.length() < minAuthorLength || author.length() > maxAuthorLength ){
+            errorMessages.add(new ErrorMessage("AUTHOR", "AUTHOR MUST BE GREATER THAN " + minAuthorLength +
+                    " AND LESS THAN " + maxAuthorLength));
+        }
     }
 }
 

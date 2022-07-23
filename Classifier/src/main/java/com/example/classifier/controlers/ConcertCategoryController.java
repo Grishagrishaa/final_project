@@ -39,7 +39,7 @@ public class ConcertCategoryController {
     public ResponseEntity<MyPage<ConcertCategory>> getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                           @RequestParam(required = false, defaultValue = "10", name = "size") Integer size){
 
-        Page<ConcertCategory> springPage = service.getAll(PageRequest.of(page, size, Sort.by("title")));
+        Page<ConcertCategory> springPage = service.getAll(PageRequest.of(page, size, Sort.by("createDate").descending()));
 
         return new ResponseEntity<MyPage<ConcertCategory>>(mapper.map(springPage, MyPage.class ), HttpStatus.OK);
     }

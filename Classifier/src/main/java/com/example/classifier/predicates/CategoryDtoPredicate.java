@@ -4,6 +4,7 @@ import com.example.classifier.dto.ErrorMessage;
 import com.example.classifier.dto.SaveConcertCategoryDto;
 import com.example.classifier.dto.SaveCountryDto;
 import com.example.classifier.exceptions.MyValidationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,11 @@ import java.util.function.Predicate;
 @Component
 public class CategoryDtoPredicate implements Predicate<SaveConcertCategoryDto> {
 
-    private final Environment env;
+    @Value("${app.minTitleLength}")
+    private Integer MIN_TITLE_LENGTH;
+    @Value("${app.maxTitleLength}")
+    private Integer MAX_TITLE_LENGTH;
     private List<ErrorMessage> errorMessages;
-
-    public CategoryDtoPredicate(Environment env) {
-        this.env = env;
-    }
 
     @Override
     public boolean test(SaveConcertCategoryDto categoryDto) {
@@ -36,12 +36,9 @@ public class CategoryDtoPredicate implements Predicate<SaveConcertCategoryDto> {
 
     private void checkTitle(String title){
 
-        int minTitleLength = Integer.parseInt(env.getProperty("minTitleLength"));
-        int maxTitleLength = Integer.parseInt(env.getProperty("maxTitleLength"));
-
-        if(title == null || title.length() < minTitleLength || title.length() > maxTitleLength){
-            errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + --minTitleLength  +
-                    " AND LESS THAN "  + maxTitleLength));
+        if(title == null || title.length() < MIN_TITLE_LENGTH || title.length() > MAX_TITLE_LENGTH){
+            errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + --MIN_TITLE_LENGTH  +
+                    " AND LESS THAN "  + MAX_TITLE_LENGTH));
         }
     }
 }

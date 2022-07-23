@@ -1,9 +1,7 @@
 package com.example.afisha.controllers.handler;
 
-import com.example.afisha.dao.entity.enums.EventStatus;
-import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.ErrorMessage;
-import com.example.afisha.dto.StructuredError;
+import com.example.afisha.dto.errors.ErrorMessage;
+import com.example.afisha.dto.errors.StructuredError;
 import com.example.afisha.exceptions.MyValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,12 +9,10 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.persistence.OptimisticLockException;
 
 import java.net.ConnectException;
-import java.util.Arrays;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;

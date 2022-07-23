@@ -1,6 +1,6 @@
 package com.example.afisha.exceptions;
 
-import com.example.afisha.dto.ErrorMessage;
+import com.example.afisha.dto.errors.ErrorMessage;
 
 import java.util.List;
 

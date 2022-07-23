@@ -1,33 +1,55 @@
-package com.example.afisha.predicates;
+package com.example.afisha.validation;
 
 import com.example.afisha.dao.entity.Film;
-import com.example.afisha.dto.CountryTest;
-import com.example.afisha.dto.ErrorMessage;
+import com.example.afisha.dto.uuidTest.CountryTest;
+import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.exceptions.MyValidationException;
-import org.springframework.core.env.Environment;
+import com.example.afisha.security.UserHolder;
+import com.example.afisha.security.utils.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 // В СЛУЧАЕ НЕВАЛИДНОГО ENUM - JSON PARSE ERROR(SINGLE)
 
 @Component
 public class FilmPredicate implements Predicate<Film> {
-    private final  Environment env;
+    @Value("${app.minTitleLength}")
+    private Integer minTitleLength;
+    @Value("${app.maxTitleLength}")
+    private Integer maxTitleLength;
+    @Value("${app.minDescriptionLength}")
+    private Integer minDescriptionLength;
+    @Value("${app.maxDescriptionLength}")
+    private Integer maxDescriptionLength;
+    @Value("${app.minDuration}")
+    private Integer minDuration;
+    @Value("${app.minReleaseYear}")
+    private Integer minReleaseYear;
+    @Value("${app.maxDuration}")
+    private Integer maxDuration;
+    @Value("${app.minAuthorLength}")
+    private Integer minAuthorLength;
+    @Value("${app.maxAuthorLength}")
+    private Integer maxAuthorLength;
+
     private final WebClient WebClient;
+    private final UserHolder userHolder;
     private List<ErrorMessage> errorMessages;
 
-    public FilmPredicate(Environment env, WebClient webClient) {
-        this.env = env;
+
+    public FilmPredicate(WebClient webClient, UserHolder userHolder) {
         WebClient = webClient;
+        this.userHolder = userHolder;
     }
 
     @Override
@@ -42,6 +64,7 @@ public class FilmPredicate implements Predicate<Film> {
         checkFutureDate(film.getReleaseYear(), "RELEASE_YEAR");
         checkFutureDate(film.getReleaseDate(), "RELEASE_DATE");
         checkDuration(film.getDuration());
+        checkAuthor(film.getAuthor());
 
         if(!errorMessages.isEmpty()){
             throw new MyValidationException(errorMessages);
@@ -52,9 +75,6 @@ public class FilmPredicate implements Predicate<Film> {
 
     private void checkTitle(String title){
 
-        int minTitleLength = Integer.parseInt(env.getProperty("minTitleLength"));
-        int maxTitleLength = Integer.parseInt(env.getProperty("maxTitleLength"));
-
         if (title == null || title.length() < minTitleLength || title.length() > maxTitleLength) {
             errorMessages.add(new ErrorMessage("TITLE", "TITLE MUST BE GREATER THAN " + minTitleLength +
                     " AND LESS THAN " + maxTitleLength));
@@ -62,9 +82,6 @@ public class FilmPredicate implements Predicate<Film> {
     }
 
     private void checkDescription(String description){
-
-        int minDescriptionLength = Integer.parseInt(env.getProperty("minDescriptionLength"));
-        int maxDescriptionLength = Integer.parseInt(env.getProperty("maxDescriptionLength"));
 
         if (description == null || description.length() < minDescriptionLength || description.length() > maxDescriptionLength) {
             errorMessages.add(new ErrorMessage("DESCRIPTION", "DESCRIPTION MUST BE GREATER THAN " + minDescriptionLength +
@@ -80,8 +97,8 @@ public class FilmPredicate implements Predicate<Film> {
 
     private void checkFutureDate(Integer year, String fieldName){
 
-        if (year < LocalDateTime.now().getYear()) {
-            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName + " CANNOT BE IN THE PAST YEAR"));
+        if (year == null || year < minReleaseYear) {
+            errorMessages.add(new ErrorMessage(fieldName.toUpperCase(), fieldName + " CANNOT BE BEFORE " + minReleaseYear));
         }
     }
 
@@ -91,6 +108,9 @@ public class FilmPredicate implements Predicate<Film> {
             WebClient
                     .get()
                     .uri(String.join("", "/country/", id.toString()))
+                    .header(AUTHORIZATION, ("Bearer ".concat(
+                            JwtTokenUtil.generateAccessToken(userHolder.getUser().getUsername()))))
+
                     .retrieve().bodyToMono(CountryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
             errorMessages.add(new ErrorMessage("COUNTRY", "COUNTRY WASN'T FOUND, CHECK URL"));
@@ -98,12 +118,17 @@ public class FilmPredicate implements Predicate<Film> {
     }
 
     private void checkDuration(Integer duration){
-        int minDuration = Integer.parseInt(env.getProperty("minDuration"));
-        int maxDuration = Integer.parseInt(env.getProperty("maxDuration"));
 
         if(duration == null || duration < minDuration || duration > maxDuration){
             errorMessages.add(new ErrorMessage("DURATION", "DURATION MUST BE GRETER " + minDuration +
                     " AND LESS THAN " + maxDuration));
+        }
+    }
+
+    private void checkAuthor(String author){
+        if(author == null || author.length() < minAuthorLength || author.length() > maxAuthorLength ){
+            errorMessages.add(new ErrorMessage("AUTHOR", "AUTHOR MUST BE GREATER THAN " + minAuthorLength +
+                    " AND LESS THAN " + maxAuthorLength));
         }
     }
 }

@@ -21,7 +21,6 @@ public class ConcertCategoryService implements IClassifierService<ConcertCategor
 
     @Override
     public void save(ConcertCategory category) {
-        category.setCreateDate(LocalDateTime.now());
         dao.save(category);
     }
 

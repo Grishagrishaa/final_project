@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 public class JwtTokenUtil {
 
-    private static final String jwtSecret = "NDQ1ZjAzNjQtMzViZi00MDRjLTljZjQtNjNjYWIyZTU5ZDYw";
+    private static final String jwtSecret = "IwANTtObECOMEaDEVELOPERIwANTtObECOMEaDEVELOPERIW";
+
     private static final String jwtIssuer = "GRIGORY_DMITRIEVICH";
 
     public static String generateAccessToken(String nick){

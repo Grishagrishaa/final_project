@@ -1,4 +1,4 @@
-package com.example.afisha.dto;
+package com.example.afisha.dto.errors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

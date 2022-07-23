@@ -14,12 +14,12 @@ import java.util.Set;
 public class SignDtoToSaveDtoConverter implements Converter<SignDto, SaveUserDto> {
     @Override
     public SaveUserDto convert(SignDto source) {
-        SaveUserDto userDto = new SaveUserDto();
-        userDto.setMail(source.getMail());
-        userDto.setNick(source.getNick());
-        userDto.setPassword(source.getPassword());
-        userDto.setRoles(Set.of(new Role(1L, ERole.USER)));
-        userDto.setStatus(EStatus.WAITING_ACTIVATION);
-        return userDto;
+        return SaveUserDto.Builder.create()
+                .setMail(source.getMail())
+                .setNick(source.getNick())
+                .setPassword(source.getPassword())
+                .setRoles(null)//DEFAULT VALUES WILL BE SET IN SERVICE LAYER
+                .setStatus(null)//...
+                .build();
     }
 }

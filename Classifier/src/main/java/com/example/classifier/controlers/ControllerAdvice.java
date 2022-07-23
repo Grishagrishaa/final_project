@@ -5,6 +5,7 @@ import com.example.classifier.dto.ErrorMessage;
 import com.example.classifier.dto.StructuredError;
 import com.example.classifier.exceptions.MyValidationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -42,6 +43,13 @@ public class ControllerAdvice {
         );
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorMessage handle(UsernameNotFoundException e){
+        return new ErrorMessage(
+                e.getMessage()
+        );
+    }
 
     @ExceptionHandler(MyValidationException.class)
     @ResponseStatus(BAD_REQUEST)

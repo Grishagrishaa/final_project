@@ -1,4 +1,4 @@
-package com.example.afisha.predicates;
+package com.example.afisha.validation;
 
 import com.example.afisha.dao.entity.enums.EventType;
 import org.springframework.stereotype.Component;

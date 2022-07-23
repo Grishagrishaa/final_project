@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 @Component
 public class SaveUserDtoPredicate implements Predicate<SaveUserDto> {
     private List<ErrorMessage> errorMessages;
+
     @Value("${app.minNickLength}")
     private Integer MIN_NICK_LENGTH;
     @Value("${app.maxNickLength}")
@@ -37,6 +38,20 @@ public class SaveUserDtoPredicate implements Predicate<SaveUserDto> {
         checkNick(dto.getNick());
         checkMail(dto.getMail());
         checkPassword(dto.getPassword());
+
+        if(!errorMessages.isEmpty()){
+            throw new MyValidationException(errorMessages);
+        }
+
+        return true;
+    }
+
+    public boolean testUpdate(SaveUserDto dto) {
+        errorMessages = new ArrayList<>();
+
+        if(dto.getNick() != null) checkNick(dto.getNick());
+        if(dto.getMail() != null) checkMail(dto.getMail());
+        if(dto.getPassword() != null) checkPassword(dto.getPassword());
 
         if(!errorMessages.isEmpty()){
             throw new MyValidationException(errorMessages);

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-
 @Table(name = "users", schema = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "nick", name = "nickConstraint"),
         @UniqueConstraint(columnNames = "mail", name = "emailConstraint")
@@ -30,8 +29,8 @@ public class User{
     )
     private UUID uuid;
 
-    @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd | HH:mm:ss.SSS")
+    @CreatedDate
     private LocalDateTime createDate;
 
     @Version
@@ -42,7 +41,7 @@ public class User{
     private String mail;
     private String nick;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)//for test
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_uuid"),

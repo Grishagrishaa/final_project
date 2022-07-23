@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class ApplicationConfig {
 
-    private static final String BASE_URL = "http://localhost:8080/api/v1/classifier/";
+    private static final String BASE_URL = "http://localhost:8080/api/v1/classifier";
     public static final int TIMEOUT = 1000;
 
     @Bean

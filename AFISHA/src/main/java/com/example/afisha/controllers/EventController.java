@@ -1,11 +1,11 @@
 package com.example.afisha.controllers;
 
 import com.example.afisha.dao.entity.Event;
-import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.pagination.MyPage;
+import com.example.afisha.security.UserHolder;
 import com.example.afisha.service.api.IEventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,14 +26,11 @@ import java.util.function.Predicate;
 @RequestMapping("/api/v1/afisha/event")
 public class EventController {
     private final IEventService eventService;
-    private final Predicate<Film> filmValidator;
     private final Predicate<String> urlTypeValidator;
     private final ModelMapper mapper;
 
-    public EventController(IEventService eventService, Predicate<Film> filmValidator,
-                           Predicate<String> urlTypeValidator, ModelMapper mapper) {
+    public EventController(IEventService eventService, Predicate<String> urlTypeValidator, ModelMapper mapper) {
         this.eventService = eventService;
-        this.filmValidator = filmValidator;
         this.urlTypeValidator = urlTypeValidator;
         this.mapper = mapper;
     }
@@ -45,8 +42,8 @@ public class EventController {
 
         IEvent event = eventService.get(uuid, EventType.valueOf(urlType));
 
-        if (!EventType.valueOf(urlType).equals(event.getType())){//сравнение типов в боди и урле
-            throw new IllegalArgumentException("TYPES DOES NOT MATCH");
+        if (!EventType.valueOf(urlType).equals(event.getType())){//сравнение типов в боди на отдачу и урле
+            throw new IllegalArgumentException("INCORRECT EVENT TYPE PROVIDED IN URL");
         }
 
         return new ResponseEntity<>(event, HttpStatus.OK);
@@ -59,21 +56,14 @@ public class EventController {
         String urlType = type.toUpperCase();
         urlTypeValidator.test(urlType);//чек правильного урла
 
-        Page<? extends Event> eventsPage = eventService.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("title")));
+        Page<? extends Event> eventsPage = eventService.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("createDate").descending()));
 
         return new ResponseEntity<MyPage<? extends Event>>(mapper.map(eventsPage, MyPage.class), HttpStatus.OK);
     }
 
-    @PostMapping("/{type}")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@PathVariable String type, @RequestBody SaveEventDtoFactory dtoFactory){
-        String urlType = type.toUpperCase();
-        urlTypeValidator.test(urlType);//чек правильного урла
-
-        if (!EventType.valueOf(urlType).equals(dtoFactory.getType())){//сравнение типов в боди и урле
-            throw new IllegalArgumentException("TYPES DOES NOT MATCH");
-        }
-
+    public void createEvent(@RequestBody SaveEventDtoFactory dtoFactory){
         eventService.save(dtoFactory.getEntity());
     }
 

@@ -39,26 +39,7 @@ public class SaveEventDtoFactory {
     private Integer duration;
 
     private UUID category;
-
-    public SaveEventDtoFactory(String title, String description,
-                               LocalDateTime eventDate, LocalDateTime dateEndOfSale,
-                               EventType type, EventStatus status,
-                               UUID country,
-                               Integer releaseYear, LocalDateTime releaseDate,
-                               Integer duration,
-                               UUID category) {
-        this.title = title;
-        this.description = description;
-        this.eventDate = eventDate;
-        this.dateEndOfSale = dateEndOfSale;
-        this.type = type;
-        this.status = status;
-        this.country = country;
-        this.releaseYear = releaseYear;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.category = category;
-    }
+    private String author;
 
     public SaveEventDtoFactory() {
     }
@@ -151,21 +132,31 @@ public class SaveEventDtoFactory {
         this.category = category;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public Event getEntity(){
         final IEvent event;
         if(EventType.FILM.equals(type)){
-            return new Film(LocalDateTime.now(),//<--CreateDate
+            return new Film(
                     title, description,
                     eventDate, dateEndOfSale,
                     type, status,
+                    author,
                     country,
                     releaseYear, releaseDate,
                     duration);
         }else {
-            return new Concert(LocalDateTime.now(),//<--CreateDate
+            return new Concert(
                     title, description,
                     eventDate, dateEndOfSale,
                     type, status,
+                    author,
                     category);
         }//ДРУГОГО ТИПА БЫТЬ НЕ МОЖЕТ ПОТОМУ ЧТО ПРИ ПОПЫТКЕ ПЕРЕДАТЬ НЕВЕРНЫЙ ТИП ВЫБРОСИТЬСЯ JSON parse error
     }

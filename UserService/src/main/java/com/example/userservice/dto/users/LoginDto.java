@@ -4,6 +4,7 @@ public class LoginDto {
     private String nick;
     private String password;
 
+
     public String getNick() {
         return nick;
     }

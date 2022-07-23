@@ -6,6 +6,7 @@ import com.example.userservice.dao.entity.api.IRoleDao;
 import com.example.userservice.dao.entity.api.IUserDao;
 import com.example.userservice.dto.users.SaveUserDto;
 import com.example.userservice.service.UserService;
+import com.example.userservice.validation.SaveUserDtoPredicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,7 @@ public class UsersStorageConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(Predicate<SaveUserDto> userDtoValidator,
+    public UserDetailsService userDetailsService(SaveUserDtoPredicate userDtoValidator,
                                                  UserToUserDetailsConverter toUserDetailsConverter, SaveUserDtoToUserConverter toUserConverter,
                                                  IUserDao userDao, IRoleDao roleDao) {
 

@@ -2,6 +2,7 @@ package com.example.afisha.service.api;
 
 
 import com.example.afisha.dao.entity.Event;
+import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;

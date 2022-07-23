@@ -25,25 +25,17 @@ public class SaveUserDtoToUserConverter implements Converter<SaveUserDto, User> 
         user.setNick(source.getNick());
         user.setMail(source.getMail());
         user.setPassword(encoder.encode(source.getPassword()));
-        user.setRoles(
-                source.getRoles() != null ?
-                source.getRoles()  :
-                Set.of(new Role(1L, ERole.USER))
-                     );
-        user.setStatus(
-                source.getStatus() != null ?
-                source.getStatus() :
-                EStatus.WAITING_ACTIVATION
-                      );
+        user.setRoles(source.getRoles());
+        user.setStatus(source.getStatus());
         return user;
     }
 
     public User update(User user, SaveUserDto source) {
-        user.setMail(source.getMail());
-        user.setNick(source.getNick());
-        user.setPassword(source.getPassword());
-        user.setRoles(source.getRoles());
-        user.setStatus(source.getStatus());
+        if(source.getMail() != null) user.setMail(source.getMail());
+        if(source.getNick() != null) user.setNick(source.getNick());
+        if(source.getPassword() != null) user.setPassword(encoder.encode(source.getPassword()));
+        if(source.getRoles() != null) user.setRoles(source.getRoles());
+        if(source.getStatus() != null) user.setStatus(source.getStatus());
         return user;
     }
 }

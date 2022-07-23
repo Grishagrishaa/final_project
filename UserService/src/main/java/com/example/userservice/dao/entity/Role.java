@@ -2,13 +2,14 @@ package com.example.userservice.dao.entity;
 
 import com.example.userservice.dao.entity.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "role", schema = "users", uniqueConstraints = {
+@Table(name = "roles", schema = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id", name = "roleIdConstraint"),
         @UniqueConstraint(columnNames = "name", name = "roleNameConstraint")
 })
@@ -18,15 +19,11 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @JsonIgnore
+    @JsonIgnore//INSTEAD OF NAME WE SHOW AUTHORITY - > THE SAME
     private ERole name;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-    private List<User> users;
 
-    public Role(Long id, ERole name) {
+    public Role(Long id) {
         this.id = id;
-        this.name = name;
     }
 
     public Role() {
@@ -38,10 +35,6 @@ public class Role implements GrantedAuthority {
 
     public ERole getName() {
         return name;
-    }
-
-    public List<User> getUsers() {
-        return users;
     }
 
     @Override

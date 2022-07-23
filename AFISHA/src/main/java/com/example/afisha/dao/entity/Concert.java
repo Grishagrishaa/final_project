@@ -17,15 +17,14 @@ public class Concert extends Event {
     @Column(nullable = false)
     private UUID category;
 
-    public Concert(LocalDateTime createDate,
-                   String title, String description,
+    public Concert(String title, String description,
                    LocalDateTime eventDate, LocalDateTime dateEndOfSale,
                    EventType type, EventStatus status,
+                   String author,
                    UUID category) {
-        super(createDate, title, description, eventDate, dateEndOfSale, type, status);
+        super(title, description, eventDate, dateEndOfSale, type, status, author);
         this.category = category;
     }
-
 
     public Concert() {
     }
@@ -39,19 +38,4 @@ public class Concert extends Event {
         this.category = category;
     }
 
-    @Override
-    public String toString() {
-        return "EventConcert{" +
-                " uuid=" + getUuid() +
-                ", createDate=" + getCreateDate() +
-                ", updateDate=" + getUpdateDate() +
-                ", title='" + getTitle() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", eventDate=" + getEventDate() +
-                ", dateEndOfSale=" + getDateEndOfSale() +
-                ", type=" + getType() +
-                ", status=" + getStatus() +
-                ",  category=" + category +
-                '}';
-    }
 }

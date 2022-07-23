@@ -1,4 +1,4 @@
-package com.example.afisha.dto;
+package com.example.afisha.dto.errors;
 
 import java.util.List;
 

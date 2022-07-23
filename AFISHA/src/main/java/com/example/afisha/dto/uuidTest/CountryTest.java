@@ -1,4 +1,4 @@
-package com.example.afisha.dto;
+package com.example.afisha.dto.uuidTest;
 
 //FOR HTTP REQUEST TO CLASSIFIER
 public class CountryTest {

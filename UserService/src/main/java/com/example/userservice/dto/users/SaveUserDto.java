@@ -12,49 +12,78 @@ public class SaveUserDto {
     private Set<Role> roles;
     private EStatus status;
 
+    public SaveUserDto() {//cant set private cause JACKSON REQUIRE public
+    }
+
+    public SaveUserDto(Builder builder) {
+        this.nick = builder.nick;
+        this.mail = builder.mail;
+        this.password = builder.password;
+        this.roles = builder.roles;
+        this.status = builder.status;
+    }
 
     public String getNick() {
         return nick;
-    }
-
-    public SaveUserDto setNick(String nick) {
-        this.nick = nick;
-        return this;
     }
 
     public String getMail() {
         return mail;
     }
 
-    public SaveUserDto setMail(String mail) {
-        this.mail = mail;
-        return this;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public SaveUserDto setPassword(String password) {
-        this.password = password;
-        return this;
     }
 
     public Set<Role> getRoles() {
         return roles;
     }
 
-    public SaveUserDto setRoles(Set<Role> roles) {
-        this.roles = roles;
-        return this;
-    }
-
     public EStatus getStatus() {
         return status;
     }
 
-    public SaveUserDto setStatus(EStatus status) {
-        this.status = status;
-        return this;
+    public static class Builder{
+        private String nick;
+        private String mail;
+        private String password;
+        private Set<Role> roles;
+        private EStatus status;
+
+        public Builder() {
+        }
+
+        public Builder setNick(String nick) {
+            this.nick = nick;
+            return this;
+        }
+
+        public Builder setMail(String mail) {
+            this.mail = mail;
+            return this;
+        }
+
+        public Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder setRoles(Set<Role> roles) {
+            this.roles = roles;
+            return this;
+        }
+
+        public Builder setStatus(EStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public static Builder create(){
+            return new Builder();
+        }
+
+        public SaveUserDto build(){
+            return new SaveUserDto(this);
+        }
     }
 }
