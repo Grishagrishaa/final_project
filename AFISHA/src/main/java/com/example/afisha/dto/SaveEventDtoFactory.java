@@ -1,7 +1,7 @@
 package com.example.afisha.dto;
 
 import com.example.afisha.dao.entity.Concert;
-import com.example.afisha.dao.entity.Event;
+import com.example.afisha.dao.entity.BaseEvent;
 import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
@@ -140,7 +140,25 @@ public class SaveEventDtoFactory {
         this.author = author;
     }
 
-    public Event getEntity(){
+    @Override
+    public String toString() {
+        return "SaveEventDtoFactory{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", eventDate=" + eventDate +
+                ", dateEndOfSale=" + dateEndOfSale +
+                ", type=" + type +
+                ", status=" + status +
+                ", country=" + country +
+                ", releaseYear=" + releaseYear +
+                ", releaseDate=" + releaseDate +
+                ", duration=" + duration +
+                ", category=" + category +
+                ", author='" + author + '\'' +
+                '}';
+    }
+
+    public BaseEvent getEntity(){
         final IEvent event;
         if(EventType.FILM.equals(type)){
             return new Film(
@@ -158,6 +176,6 @@ public class SaveEventDtoFactory {
                     type, status,
                     author,
                     category);
-        }//ДРУГОГО ТИПА БЫТЬ НЕ МОЖЕТ ПОТОМУ ЧТО ПРИ ПОПЫТКЕ ПЕРЕДАТЬ НЕВЕРНЫЙ ТИП ВЫБРОСИТЬСЯ JSON parse error
+        }//ДРУГОГО ТИПА БЫТЬ НЕ МОЖЕТ ПОТОМУ ЧТО ПРИ ПОПЫТКЕ ПЕРЕДАТЬ НЕВЕРНЫЙ ТИП ВЫБРОСИТЬСЯ JSON parse error//exception
     }
 }

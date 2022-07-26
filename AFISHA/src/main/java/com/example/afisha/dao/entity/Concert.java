@@ -1,9 +1,7 @@
 package com.example.afisha.dao.entity;
 
-import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.SaveEventDtoFactory;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -13,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "concerts", schema = "events")
 @EntityListeners(AuditingEntityListener.class)
-public class Concert extends Event {
+public class Concert extends BaseEvent {
     @Column(nullable = false)
     private UUID category;
 
@@ -38,4 +36,10 @@ public class Concert extends Event {
         this.category = category;
     }
 
+    @Override
+    public String toString() {
+        return "Concert{" +
+                "category=" + category +
+                '}';
+    }
 }

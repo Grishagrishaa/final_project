@@ -2,7 +2,6 @@ package com.example.afisha.dao.entity;
 
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dto.SaveEventDtoFactory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "films", schema = "events")
 @EntityListeners(AuditingEntityListener.class)
-public class Film extends Event {
+public class Film extends BaseEvent {
     private UUID country;
     private Integer releaseYear;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -69,5 +68,15 @@ public class Film extends Event {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    @Override
+    public String toString() {
+        return "Film{" +
+                "country=" + country +
+                ", releaseYear=" + releaseYear +
+                ", releaseDate=" + releaseDate +
+                ", duration=" + duration +
+                '}';
     }
 }

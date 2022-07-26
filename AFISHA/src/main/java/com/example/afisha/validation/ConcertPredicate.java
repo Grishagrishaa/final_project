@@ -1,11 +1,14 @@
 package com.example.afisha.validation;
 
+import com.example.afisha.controllers.EventController;
 import com.example.afisha.dao.entity.Concert;
 import com.example.afisha.dto.uuidTest.ConcertCategoryTest;
 import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.exceptions.MyValidationException;
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.security.utils.JwtTokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,7 +39,7 @@ public class ConcertPredicate implements Predicate<Concert> {
     @Value("${app.maxAuthorLength}")
     private Integer maxAuthorLength;
 
-
+    private static final Logger log = LoggerFactory.getLogger(ConcertPredicate.class);
     private final WebClient WebClient;
     private List<ErrorMessage> errorMessages;
     private final UserHolder userHolder;
@@ -48,21 +51,55 @@ public class ConcertPredicate implements Predicate<Concert> {
 
     @Override
     public boolean test(Concert concert) {
+        log.info("CHECK EVENT(CONCERT)");
         errorMessages = new ArrayList<>();
 
+        log.info("CHECK TITLE");
         checkTitle(concert.getTitle());
+        log.info("CHECK DESCRIPTION");
         checkDescription(concert.getDescription());
+        log.info("CHECK EVENT_DATE");
         checkFutureDate(concert.getEventDate(), "EVENT_DATE");
+        log.info("CHECK DATE_END_OF_SALE");
         checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
+        log.info("CHECK CATEGORY");
         checkCategory(concert.getCategory());
+        log.info("CHECK AUTHOR");
         checkAuthor(concert.getAuthor());
 
 
         if(!errorMessages.isEmpty()){
+            log.info("MY_VALID_EXCEPTION");
             throw new MyValidationException(errorMessages);
         }
 
+        log.info("SUCCESSFUL CHECK");
         return true;
+    }
+
+    public void testUpdate(Concert concert) {
+        log.info("CHECK UPDATE EVENT(CONCERT)");
+        errorMessages = new ArrayList<>();
+
+        log.info("CHECK TITLE");
+        if(concert.getTitle() != null) checkTitle(concert.getTitle());
+        log.info("CHECK DESCRIPTION");
+        if(concert.getDescription() != null) checkDescription(concert.getDescription());
+        log.info("CHECK EVENT_DATE");
+        if(concert.getEventDate() != null) checkFutureDate(concert.getEventDate(), "EVENT_DATE");
+        log.info("CHECK DATE_END_OF_SALE");
+        if(concert.getDateEndOfSale() != null) checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
+        log.info("CHECK CATEGORY");
+        if(concert.getCategory() != null) checkCategory(concert.getCategory());
+        log.info("CHECK AUTHOR");
+        if(concert.getAuthor() != null) checkAuthor(concert.getAuthor());
+
+
+        if(!errorMessages.isEmpty()){
+            log.info("MY_VALID_EXCEPTION");
+            throw new MyValidationException(errorMessages);
+        }
+        log.info("SUCCESSFUL CHECK");
     }
 
     private void checkTitle(String title){

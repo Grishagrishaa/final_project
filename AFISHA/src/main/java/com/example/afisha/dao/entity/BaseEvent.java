@@ -10,9 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
-import org.modelmapper.config.Configuration;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Persistent;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -22,7 +20,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Event implements IEvent {
+public abstract class BaseEvent implements IEvent {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -56,10 +54,10 @@ public abstract class Event implements IEvent {
     @JsonIgnore
     private String author;
 
-    public Event(String title, String description,
-                 LocalDateTime eventDate, LocalDateTime dateEndOfSale,
-                 EventType type, EventStatus status,
-                 String author) {
+    public BaseEvent(String title, String description,
+                     LocalDateTime eventDate, LocalDateTime dateEndOfSale,
+                     EventType type, EventStatus status,
+                     String author) {
         this.title = title;
         this.description = description;
         this.eventDate = eventDate;
@@ -69,15 +67,23 @@ public abstract class Event implements IEvent {
         this.author = author;
     }
 
-    public Event() {
+    public BaseEvent() {
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public LocalDateTime getCreateDate() {
         return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     @Override
@@ -85,20 +91,40 @@ public abstract class Event implements IEvent {
         return updateDate;
     }
 
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public LocalDateTime getEventDate() {
         return eventDate;
     }
 
+    public void setEventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public LocalDateTime getDateEndOfSale() {
         return dateEndOfSale;
+    }
+
+    public void setDateEndOfSale(LocalDateTime dateEndOfSale) {
+        this.dateEndOfSale = dateEndOfSale;
     }
 
     @Override
@@ -106,12 +132,24 @@ public abstract class Event implements IEvent {
         return type;
     }
 
+    public void setType(EventType type) {
+        this.type = type;
+    }
+
     public EventStatus getStatus() {
         return status;
     }
 
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
     public String getAuthor() {
         return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.exceptions.MyValidationException;
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.security.utils.JwtTokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,6 +44,7 @@ public class FilmPredicate implements Predicate<Film> {
     @Value("${app.maxAuthorLength}")
     private Integer maxAuthorLength;
 
+    private static final Logger log = LoggerFactory.getLogger(FilmPredicate.class);
     private final WebClient WebClient;
     private final UserHolder userHolder;
     private List<ErrorMessage> errorMessages;
@@ -54,23 +57,67 @@ public class FilmPredicate implements Predicate<Film> {
 
     @Override
     public boolean test(Film film) {
+        log.info("CHECK EVENT(FILM)");
         errorMessages = new ArrayList<>();
 
+
+        log.info("CHECK TITLE");
         checkTitle(film.getTitle());
+        log.info("CHECK DESCRIPTION");
         checkDescription(film.getDescription());
+        log.info("CHECK EVENT_DATE");
         checkFutureDate(film.getEventDate(), "EVENT_DATE");
+        log.info("CHECK DATE_END_OF_SALE");
         checkFutureDate(film.getDateEndOfSale(), "DATE_END_OF_SALE");
+        log.info("CHECK COUNTRY");
         checkCountry(film.getCountry());
+        log.info("CHECK RELEASE_YEAR");
         checkFutureDate(film.getReleaseYear(), "RELEASE_YEAR");
+        log.info("CHECK RELEASE_DATE");
         checkFutureDate(film.getReleaseDate(), "RELEASE_DATE");
+        log.info("CHECK DURATION");
         checkDuration(film.getDuration());
+        log.info("CHECK AUTHOR");
         checkAuthor(film.getAuthor());
 
         if(!errorMessages.isEmpty()){
+            log.info("MY_VALID_EXCEPTION");
             throw new MyValidationException(errorMessages);
         }
 
+        log.info("SUCCESSFUL CHECK");
         return true;
+    }
+
+    public void testUpdate(Film film) {
+        log.info("CHECK UPDATE EVENT(FILM)");
+        errorMessages = new ArrayList<>();
+
+        log.info("CHECK TITLE");
+        if(film.getTitle() != null) checkTitle(film.getTitle());
+        log.info("CHECK DESCRIPTION");
+        if(film.getDescription() != null) checkDescription(film.getDescription());
+        log.info("CHECK EVENT_DATE");
+        if(film.getEventDate() != null) checkFutureDate(film.getEventDate(), "EVENT_DATE");
+        log.info("CHECK DATE_END_OF_SALE");
+        if(film.getDateEndOfSale() != null) checkFutureDate(film.getDateEndOfSale(), "DATE_END_OF_SALE");
+        log.info("CHECK COUNTRY");
+        if(film.getCountry() != null) checkCountry(film.getCountry());
+        log.info("CHECK RELEASE_YEAR");
+        if(film.getReleaseYear() != null) checkFutureDate(film.getReleaseYear(), "RELEASE_YEAR");
+        log.info("CHECK RELEASE_DATE");
+        if(film.getReleaseDate() != null) checkFutureDate(film.getReleaseDate(), "RELEASE_DATE");
+        log.info("CHECK DURATION");
+        if(film.getDuration() != null) checkDuration(film.getDuration());
+        log.info("CHECK AUTHOR");
+        if(film.getAuthor() != null) checkAuthor(film.getAuthor());
+
+        if(!errorMessages.isEmpty()){
+            log.info("MY_VALID_EXCEPTION");
+            throw new MyValidationException(errorMessages);
+        }
+
+        log.info("SUCCESSFUL CHECK");
     }
 
     private void checkTitle(String title){

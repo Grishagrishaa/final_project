@@ -12,6 +12,7 @@ public class UserDetailsUser implements UserDetails {
 
     private String username;
     private Boolean enabled;
+
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     private Collection<? extends GrantedAuthority> authorities;
 

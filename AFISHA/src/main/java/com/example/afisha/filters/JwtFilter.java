@@ -1,4 +1,4 @@
-package com.example.afisha.controllers.filters;
+package com.example.afisha.filters;
 
 import com.example.afisha.service.EventService;
 import com.example.afisha.security.utils.JwtTokenUtil;

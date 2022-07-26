@@ -3,7 +3,7 @@ package com.example.afisha.service;
 import com.example.afisha.dao.api.IEventConcertDao;
 import com.example.afisha.dao.api.IEventFilmDao;
 import com.example.afisha.dao.entity.Concert;
-import com.example.afisha.dao.entity.Event;
+import com.example.afisha.dao.entity.BaseEvent;
 import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
@@ -11,7 +11,11 @@ import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.security.UserDetailsUser;
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.service.api.IEventService;
+import com.example.afisha.validation.ConcertPredicate;
+import com.example.afisha.validation.FilmPredicate;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +28,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import static com.example.afisha.dao.entity.enums.EventStatus.*;
 import static com.example.afisha.dao.entity.enums.EventType.*;
@@ -32,22 +35,24 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 public class EventService implements IEventService {
+    private static final Logger log = LoggerFactory.getLogger(EventService.class);
     private final IEventFilmDao filmDao;
     private final IEventConcertDao concertDao;
     private final ModelMapper mapper;
     private final WebClient webClient;
-    private final Predicate<Film> filmValidator;
-    private final Predicate<Concert> concertValidator;
+    private final FilmPredicate filmValidator;
+    private final ConcertPredicate concertValidator;
     private final UserHolder userHolder;
 
 
-
     public EventService(IEventFilmDao filmDao, IEventConcertDao concertDao,
-                        ModelMapper mapper, WebClient WebClient, Predicate<Film> filmValidator, Predicate<Concert> concertValidator, UserHolder userHolder) {
+                        ModelMapper mapper, WebClient webClient,
+                        FilmPredicate filmValidator, ConcertPredicate concertValidator,
+                        UserHolder userHolder) {
         this.filmDao = filmDao;
         this.concertDao = concertDao;
         this.mapper = mapper;
-        this.webClient = WebClient;
+        this.webClient = webClient;
         this.filmValidator = filmValidator;
         this.concertValidator = concertValidator;
         this.userHolder = userHolder;
@@ -59,12 +64,15 @@ public class EventService implements IEventService {
             case FILM:
                 Film film = (Film) event;
                 filmValidator.test(film);
+                log.info("SAVE FILM " + film);
                 filmDao.save(film);
                 break;
             case CONCERT:
                 Concert concert = (Concert) event;
                 concertValidator.test(concert);
+                log.info("SAVE CONCERT " + concert);
                 concertDao.save(concert);
+
                 break;
         }
     }
@@ -101,7 +109,7 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Page<? extends Event> getAll(EventType type, Pageable pageable) {
+    public Page<? extends BaseEvent> getAll(EventType type, Pageable pageable) {
         switch(type){
             case CONCERT://ADMIN
                 if(userHolder.isAdmin()) return concertDao.findAll(pageable);
@@ -138,9 +146,10 @@ public class EventService implements IEventService {
                         throw new OptimisticLockException("CONCERT WAS ALREADY UPDATED");
                     }
 
-                    concertValidator.test(concertUpdate);
+                    concertValidator.testUpdate(concertUpdate);
 
                     mapper.map(concertUpdate, concert);
+                    log.info("SAVE UPDATED CONCERT " + concert);
 
                     concertDao.save(concert);
                 case FILM:
@@ -151,9 +160,10 @@ public class EventService implements IEventService {
                         throw new OptimisticLockException("FILM WAS ALREADY UPDATED");
                     }
 
-                    filmValidator.test(filmUpdate);
+                    filmValidator.testUpdate(filmUpdate);
 
                     mapper.map(filmUpdate, film);
+                    log.info("SAVE UPDATED FILM " + film);
 
                     filmDao.save(film);
             }

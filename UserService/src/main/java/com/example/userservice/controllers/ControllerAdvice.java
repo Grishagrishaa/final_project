@@ -39,7 +39,7 @@ public class ControllerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpMessageNotReadableException e){
-        return new ErrorMessage(
+        return new ErrorMessage(//todo
                 e.getLocalizedMessage()
         );
     }
@@ -53,16 +53,17 @@ public class ControllerAdvice {
         );
     }
 
+    @ExceptionHandler(PSQLException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorMessage handle(PSQLException e){
+        return new ErrorMessage(e.getServerErrorMessage().getDetail());
+    }
+
     @ExceptionHandler(MyValidationException.class)
     @ResponseStatus(BAD_REQUEST)
     public StructuredError handle(MyValidationException e){
         return new StructuredError(e.getErrorMessages());
     }
 
-    @ExceptionHandler(PSQLException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(PSQLException e){
-        return new ErrorMessage(e.getServerErrorMessage().getDetail());
-    }
 }
 

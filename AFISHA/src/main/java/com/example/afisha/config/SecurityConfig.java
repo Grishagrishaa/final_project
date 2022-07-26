@@ -1,6 +1,6 @@
 package com.example.afisha.config;
 
-import com.example.afisha.controllers.filters.JwtFilter;
+import com.example.afisha.filters.JwtFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

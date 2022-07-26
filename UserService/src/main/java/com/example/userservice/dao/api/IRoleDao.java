@@ -1,4 +1,4 @@
-package com.example.userservice.dao.entity.api;
+package com.example.userservice.dao.api;
 
 import com.example.userservice.dao.entity.Role;
 import com.example.userservice.dao.entity.enums.ERole;

@@ -17,7 +17,7 @@ import reactor.netty.http.client.HttpClient;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class ControllerConfig {
+public class ApplicationConfig {
 
     @Bean(name = "objectMapper")
     public ObjectMapper objectMapper(){
