@@ -1,6 +1,5 @@
 package com.example.afisha.validation;
 
-import com.example.afisha.controllers.EventController;
 import com.example.afisha.dao.entity.Concert;
 import com.example.afisha.dto.uuidTest.ConcertCategoryTest;
 import com.example.afisha.dto.errors.ErrorMessage;
@@ -25,7 +24,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 // В СЛУЧАЕ НЕВАЛИДНОГО ENUM - JSON PARSE ERROR(SINGLE)
 
 @Component
-public class ConcertPredicate implements Predicate<Concert> {
+public class ConcertValidationPredicate implements Predicate<Concert> {
     @Value("${app.minTitleLength}")
     private Integer minTitleLength;
     @Value("${app.maxTitleLength}")
@@ -39,12 +38,12 @@ public class ConcertPredicate implements Predicate<Concert> {
     @Value("${app.maxAuthorLength}")
     private Integer maxAuthorLength;
 
-    private static final Logger log = LoggerFactory.getLogger(ConcertPredicate.class);
+    private static final Logger log = LoggerFactory.getLogger(ConcertValidationPredicate.class);
     private final WebClient WebClient;
     private List<ErrorMessage> errorMessages;
     private final UserHolder userHolder;
 
-    public ConcertPredicate(WebClient webClient, UserHolder userHolder) {
+    public ConcertValidationPredicate(WebClient webClient, UserHolder userHolder) {
         WebClient = webClient;
         this.userHolder = userHolder;
     }
@@ -54,17 +53,12 @@ public class ConcertPredicate implements Predicate<Concert> {
         log.info("CHECK EVENT(CONCERT)");
         errorMessages = new ArrayList<>();
 
-        log.info("CHECK TITLE");
+
         checkTitle(concert.getTitle());
-        log.info("CHECK DESCRIPTION");
         checkDescription(concert.getDescription());
-        log.info("CHECK EVENT_DATE");
         checkFutureDate(concert.getEventDate(), "EVENT_DATE");
-        log.info("CHECK DATE_END_OF_SALE");
         checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
-        log.info("CHECK CATEGORY");
         checkCategory(concert.getCategory());
-        log.info("CHECK AUTHOR");
         checkAuthor(concert.getAuthor());
 
 
@@ -81,18 +75,13 @@ public class ConcertPredicate implements Predicate<Concert> {
         log.info("CHECK UPDATE EVENT(CONCERT)");
         errorMessages = new ArrayList<>();
 
-        log.info("CHECK TITLE");
         if(concert.getTitle() != null) checkTitle(concert.getTitle());
-        log.info("CHECK DESCRIPTION");
         if(concert.getDescription() != null) checkDescription(concert.getDescription());
-        log.info("CHECK EVENT_DATE");
         if(concert.getEventDate() != null) checkFutureDate(concert.getEventDate(), "EVENT_DATE");
-        log.info("CHECK DATE_END_OF_SALE");
         if(concert.getDateEndOfSale() != null) checkFutureDate(concert.getDateEndOfSale(), "DATE_END_OF_SALE");
-        log.info("CHECK CATEGORY");
         if(concert.getCategory() != null) checkCategory(concert.getCategory());
-        log.info("CHECK AUTHOR");
         if(concert.getAuthor() != null) checkAuthor(concert.getAuthor());
+
 
 
         if(!errorMessages.isEmpty()){
@@ -143,6 +132,7 @@ public class ConcertPredicate implements Predicate<Concert> {
             errorMessages.add(new ErrorMessage("AUTHOR", "AUTHOR MUST BE GREATER THAN " + minAuthorLength +
                     " AND LESS THAN " + maxAuthorLength));
         }
+
     }
 }
 

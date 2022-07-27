@@ -1,7 +1,6 @@
 package com.example.afisha.validation;
 
 import com.example.afisha.dao.entity.enums.EventType;
-import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import static com.example.afisha.dao.entity.enums.EventType.CONCERT;
 import static com.example.afisha.dao.entity.enums.EventType.FILM;
 
 @Component//в случае невалидниго урла выкинет ошибку
-public class UrlTypePredicate implements Predicate<String> {
+public class UrlTypeValidationPredicate implements Predicate<String> {
 
     public boolean test(String type) {
         try {

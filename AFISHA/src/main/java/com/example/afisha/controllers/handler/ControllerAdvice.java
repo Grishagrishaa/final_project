@@ -62,6 +62,8 @@ public class ControllerAdvice {
         );
     }
 
+    //TODO MYROLE EXCEPT, TYPENOTFOUNDEXC
+
     @ExceptionHandler(MyValidationException.class)
     @ResponseStatus(BAD_REQUEST)
     public StructuredError handle(MyValidationException e){

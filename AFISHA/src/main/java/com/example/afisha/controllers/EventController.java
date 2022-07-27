@@ -1,12 +1,11 @@
 package com.example.afisha.controllers;
 
 import com.example.afisha.dao.entity.BaseEvent;
-import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.controllers.pagination.MyPage;
-import com.example.afisha.service.api.IEventService;
-import com.example.afisha.validation.UrlTypePredicate;
+import com.example.afisha.service.api.IDecoratorService;
+import com.example.afisha.validation.UrlTypeValidationPredicate;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +28,23 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/api/v1/afisha/event")
 public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
-    private final IEventService eventService;
-    private final UrlTypePredicate urlTypeValidator;
+    private final IDecoratorService service;
+    private final UrlTypeValidationPredicate urlTypeValidator;
     private final ModelMapper mapper;
 
-    public EventController(IEventService eventService, UrlTypePredicate urlTypeValidator, ModelMapper mapper) {
-        this.eventService = eventService;
+    public EventController(IDecoratorService service, UrlTypeValidationPredicate urlTypeValidator, ModelMapper mapper) {
+        this.service = service;
         this.urlTypeValidator = urlTypeValidator;
         this.mapper = mapper;
     }
 
     @GetMapping("/{type}/{uuid}")
-    public ResponseEntity<IEvent> getEvent(@PathVariable String type, @PathVariable UUID uuid){
+    public ResponseEntity<BaseEvent> getEvent(@PathVariable String type, @PathVariable UUID uuid){
         String urlType = type.toUpperCase();//todo type
-        log.info("TEST URL");
 
-        urlTypeValidator.test(urlType);//чек правильного урла
+        urlTypeValidator.test(urlType);//check isValid url
 
-        IEvent event = eventService.get(uuid, EventType.valueOf(urlType));
+        BaseEvent event = service.get(uuid, EventType.valueOf(urlType));
         log.info("GET EVENT");
 
         if (!EventType.valueOf(urlType).equals(event.getType())){//сравнение типов в боди на отдачу и урле
@@ -61,13 +59,11 @@ public class EventController {
                                                               @RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                               @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
         String urlType = type.toUpperCase();
-        log.info("TEST URL");
         urlTypeValidator.test(urlType);
 
         log.info("GET PAGE");
-        Page<? extends BaseEvent> eventsPage = eventService.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("createDate").descending()));
+        Page<? extends BaseEvent> eventsPage = service.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("createDate").descending()));
 
-        log.info("MAP PAGE");
         return new ResponseEntity<MyPage<? extends BaseEvent>>(mapper.map(eventsPage, MyPage.class), OK);
     }
 
@@ -75,7 +71,7 @@ public class EventController {
     @ResponseStatus(CREATED)
     public void createEvent(@RequestBody SaveEventDtoFactory dtoFactory){
         log.info( "SAVE DTO " + dtoFactory );
-        eventService.save(dtoFactory.getEntity());
+        service.save(dtoFactory.getEntity());
     }
 
     @PutMapping("/{uuid}/dt_update/{dt_update}")
@@ -89,7 +85,7 @@ public class EventController {
         }
 
         log.info("UPDATE DTO " + dtoFactory );
-        eventService.update(dtoFactory, uuid, dt_update);
+        service.update(dtoFactory, uuid, dt_update);
     }
 }
 /*

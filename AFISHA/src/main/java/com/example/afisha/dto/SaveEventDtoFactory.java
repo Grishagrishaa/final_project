@@ -3,13 +3,13 @@ package com.example.afisha.dto;
 import com.example.afisha.dao.entity.Concert;
 import com.example.afisha.dao.entity.BaseEvent;
 import com.example.afisha.dao.entity.Film;
-import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
 import com.example.afisha.dao.entity.utils.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.TypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -159,7 +159,6 @@ public class SaveEventDtoFactory {
     }
 
     public BaseEvent getEntity(){
-        final IEvent event;
         if(EventType.FILM.equals(type)){
             return new Film(
                     title, description,
@@ -169,13 +168,14 @@ public class SaveEventDtoFactory {
                     country,
                     releaseYear, releaseDate,
                     duration);
-        }else {
+        }else if(EventType.CONCERT.equals(type)) {
             return new Concert(
                     title, description,
                     eventDate, dateEndOfSale,
                     type, status,
                     author,
                     category);
-        }//ДРУГОГО ТИПА БЫТЬ НЕ МОЖЕТ ПОТОМУ ЧТО ПРИ ПОПЫТКЕ ПЕРЕДАТЬ НЕВЕРНЫЙ ТИП ВЫБРОСИТЬСЯ JSON parse error//exception
+        }
+        throw new TypeMismatchException("INTERNAL SERVER ERROR | CANNOT RECOGNIZE TYPE OF EVENT");
     }
 }

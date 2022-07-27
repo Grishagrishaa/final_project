@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class ConcertCategoryService implements IClassifierService<ConcertCategory> {
     private static final Logger log = LoggerFactory.getLogger(ConcertCategoryService.class);
     private final IConcertCategoryDao dao;
@@ -23,6 +25,7 @@ public class ConcertCategoryService implements IClassifierService<ConcertCategor
     }
 
     @Override
+    @Transactional
     public void save(ConcertCategory category) {
         dao.save(category);
         log.info("SAVE CATEGORY " + category);

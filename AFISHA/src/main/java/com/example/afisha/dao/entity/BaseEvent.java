@@ -1,6 +1,5 @@
 package com.example.afisha.dao.entity;
 
-import com.example.afisha.dao.entity.api.IEvent;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
@@ -20,7 +19,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEvent implements IEvent {
+public abstract class BaseEvent{
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -86,7 +85,6 @@ public abstract class BaseEvent implements IEvent {
         this.createDate = createDate;
     }
 
-    @Override
     public LocalDateTime getUpdateDate() {
         return updateDate;
     }
@@ -127,7 +125,6 @@ public abstract class BaseEvent implements IEvent {
         this.dateEndOfSale = dateEndOfSale;
     }
 
-    @Override
     public EventType getType() {
         return type;
     }

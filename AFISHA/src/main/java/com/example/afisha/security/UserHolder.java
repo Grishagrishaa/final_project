@@ -1,9 +1,16 @@
 package com.example.afisha.security;
 
+import com.example.afisha.exceptions.MyRoleNotFoundException;
+import com.example.afisha.security.utils.ERole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import javax.management.relation.RoleInfoNotFoundException;
+import javax.management.relation.RoleNotFoundException;
+import javax.naming.AuthenticationException;
+import javax.naming.NamingException;
 
 
 @Component
@@ -21,10 +28,29 @@ public class UserHolder {
     /**
      * boolean isAuthenticated()
      * @return false if user - anonymous (did not authorize)
-     *  true if not authorized
+     *  true authorized
      */
-    public boolean isAuthenticated(){
+
+    boolean isAuthenticated(){
         return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser");
+    }
+
+    public ERole getAuthority(){
+        if(!isAuthenticated()){
+            return null;
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        if(userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
+            return ERole.ADMIN;
+        }
+        if(userDetails.getAuthorities().contains(new SimpleGrantedAuthority("USER"))){
+            return ERole.USER;
+        }
+
+        throw new MyRoleNotFoundException("INTERNAL SERVER ERROR | CANNOT RECOGNIZE ROLE ");
     }
 
     /**

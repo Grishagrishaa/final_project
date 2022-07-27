@@ -39,7 +39,7 @@ public class ControllerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpMessageNotReadableException e){
-        return new ErrorMessage(//todo
+        return new ErrorMessage(//todo your exception with custom message
                 e.getLocalizedMessage()
         );
     }

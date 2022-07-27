@@ -1,5 +1,7 @@
 package com.example.afisha;
 
+import com.example.afisha.dao.entity.BaseEvent;
+import com.example.afisha.dao.entity.Film;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class CountryService implements IClassifierService<Country> {
     private static final Logger log = LoggerFactory.getLogger(CountryService.class);
 
@@ -23,6 +25,7 @@ public class CountryService implements IClassifierService<Country> {
     }
 
     @Override
+    @Transactional
     public void save(Country country) {
         log.info("SAVE COUNTRY " + country);
         dao.save(country);

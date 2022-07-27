@@ -23,5 +23,5 @@ public interface IEventFilmDao extends JpaRepository<Film, UUID> {
     @Query("SELECT film FROM Film film WHERE film.uuid = ?1 and (film.status = ?2 or film.author = ?3)")
     Optional<Film> findByUuidIsOrStatusIsOrAuthorIs(UUID uuid, EventStatus status, String author);
     //NOT AUTHORIZED
-    Optional<Film> findByStatusIsAndUuid(EventStatus status, UUID uuid);
+    Optional<Film> findByUuidIsAndStatusIs(EventStatus status, UUID uuid);
 }

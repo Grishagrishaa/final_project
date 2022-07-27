@@ -1,6 +1,5 @@
 package com.example.afisha.security.utils;
 
-import com.example.afisha.service.EventService;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
