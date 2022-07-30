@@ -1,6 +1,0 @@
-#spring:
-#  datasource:
-#    username: postgres
-#    password: postgres
-#    url: jdbc:postgresql://localhost:5432/bank?currentSchema=currency
-#    driver-class-name: org.postgresql.Driver

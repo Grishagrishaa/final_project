@@ -1,0 +1,58 @@
+version: '3.5'
+services:
+  db:
+    build: postgresql
+    image: afisha_postgresql:1.0.0
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - /docker-entrypoint-initdb.d
+    networks:
+      - afisha_ntwrk
+  pgadmin:
+    build: pgadmin
+    image: afisha_pgadmin:1.0.0
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "83:80"
+    networks:
+      - afisha_ntwrk
+  swagger-ui:
+    build: swagger-ui
+    image: afisha_swagger-ui:1.0.0
+    ports:
+      - "84:8080"
+    networks:
+      - afisha_ntwrk
+
+  event-service:
+    build: afisha_service
+    image: afisha_service:1.0.0
+    networks:
+      - afisha_ntwrk
+  classifier-service:
+    build: classifier_service
+    image: classifier_service:1.0.0
+    networks:
+      - afisha_ntwrk
+  user-service:
+      build: user_service
+      image: user_service:1.0.0
+      networks:
+        - afisha_ntwrk
+
+  proxy:
+    build: proxy
+    image: afisha_proxy:1.0.0
+    ports:
+      - "80:80"
+    networks:
+      - afisha_ntwrk
+networks:
+    afisha_ntwrk:
+      name: afisha_ntwrk
