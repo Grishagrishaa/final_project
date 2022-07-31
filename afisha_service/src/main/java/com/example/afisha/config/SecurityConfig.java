@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtFilter filter;
-    private static final String AFISHA_ENDPOINTS = "/api/v1/afisha/event/**";
+    private static final String AFISHA_ENDPOINTS = "/afisha/event/**";
 
 
     public SecurityConfig(JwtFilter filter) {

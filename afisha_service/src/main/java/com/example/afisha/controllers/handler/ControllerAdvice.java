@@ -4,6 +4,8 @@ import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.dto.errors.StructuredError;
 import com.example.afisha.exceptions.MyRoleNotFoundException;
 import com.example.afisha.exceptions.MyValidationException;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.hibernate.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -87,6 +89,14 @@ public class ControllerAdvice {
     public ErrorMessage handle(UsernameNotFoundException e){
         return new ErrorMessage(
                 e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(ReadTimeoutException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ErrorMessage handle(ReadTimeoutException e){
+        return new ErrorMessage(
+                "Connect Timed Out. Send request again"
         );
     }
 

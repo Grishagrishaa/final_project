@@ -130,8 +130,7 @@ public class ConcertValidationPredicate implements Predicate<Concert> {
                             JwtTokenUtil.generateAccessToken(userHolder.getUser().getUsername()))))
                     .retrieve().bodyToMono(ConcertCategoryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
-            errorMessages.add(new ErrorMessage("CATEGORY", "CATEGORY WASN'T FOUND, CHECK URL | " +
-                    e.getMessage()));
+            errorMessages.add(new ErrorMessage("CATEGORY", "CATEGORY WASN'T FOUND, CHECK URL"));
         }
     }
 

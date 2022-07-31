@@ -12,13 +12,13 @@
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dto/errors/StructuredError.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/validation/SaveUserDtoPredicate.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dao/entity/enums/EStatus.java
+/Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/controllers/handler/ControllerAdvice.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dao/entity/Role.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/security/UserHolder.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dao/entity/utils/LocalDateTimeSerializer.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dto/MyValidationException.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/controllers/filters/JwtFilter.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/converters/UserToUserDetailsConverter.java
-/Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/controllers/ControllerAdvice.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/config/UsersStorageConfig.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/UserServiceApplication.java
 /Users/GrigoryDmitrievich/Downloads/test/user_service/src/main/java/com/example/userservice/dto/errors/ErrorMessage.java

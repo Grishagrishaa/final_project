@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtFilter filter;
-    private static final String AUTHENTICATED_ENDPOINTS = "/api/v1/classifier/**";
+    private static final String AUTHENTICATED_ENDPOINTS = "/classifier/**";
 
     public SecurityConfig(JwtFilter filter) {
         this.filter = filter;

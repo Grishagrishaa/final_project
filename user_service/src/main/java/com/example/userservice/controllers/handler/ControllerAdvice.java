@@ -1,4 +1,4 @@
-package com.example.userservice.controllers;
+package com.example.userservice.controllers.handler;
 
 
 import com.example.userservice.dto.errors.ErrorMessage;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.OptimisticLockException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -58,6 +59,7 @@ public class ControllerAdvice {
     public ErrorMessage handle(PSQLException e){
         return new ErrorMessage(e.getServerErrorMessage().getDetail());
     }
+
 
     @ExceptionHandler(MyValidationException.class)
     @ResponseStatus(BAD_REQUEST)

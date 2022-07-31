@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtFilter filter;
-    private static final String ADMIN_ENDPOINT = "/api/v1/users/**";
-    private static final String[] PUBLIC_ENDPOINTS = {"/api/v1/users/login","/api/v1/users/registration"};
-    private static final String AUTHENTICATED = "/api/v1/users/me";
+    private static final String ADMIN_ENDPOINT = "/users/**";
+    private static final String[] PUBLIC_ENDPOINTS = {"/users/login","/users/registration"};
+    private static final String AUTHENTICATED = "/users/me";
 
     public SecurityConfig(JwtFilter filter) {
         this.filter = filter;

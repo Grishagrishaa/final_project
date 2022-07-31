@@ -1,3 +1,4 @@
+com/example/userservice/controllers/handler/ControllerAdvice.class
 com/example/userservice/controllers/utils/StringToLocalDateTimeConverter.class
 com/example/userservice/dto/users/SaveUserDto$Builder.class
 com/example/userservice/config/UsersStorageConfig.class
@@ -12,7 +13,6 @@ com/example/userservice/dto/errors/StructuredError.class
 com/example/userservice/controllers/filters/JwtFilter.class
 com/example/userservice/security/utils/JwtTokenUtil.class
 com/example/userservice/dto/errors/ErrorMessage.class
-com/example/userservice/controllers/ControllerAdvice.class
 com/example/userservice/dao/entity/Role.class
 com/example/userservice/converters/SignDtoToSaveDtoConverter.class
 com/example/userservice/dto/MyValidationException.class

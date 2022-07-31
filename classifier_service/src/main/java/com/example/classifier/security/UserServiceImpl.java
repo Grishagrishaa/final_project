@@ -12,7 +12,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserServiceImpl {
     private final WebClient WebClient;
 
-    public UserServiceImpl(org.springframework.web.reactive.function.client.WebClient webClient) {
+    public UserServiceImpl(WebClient webClient) {
         WebClient = webClient;
     }
 
@@ -21,7 +21,6 @@ public class UserServiceImpl {
         try {
             user = WebClient
                     .get()
-                    .uri("http://user-service:8080/users/me")
                     .header(AUTHORIZATION, headerValue)
                     .retrieve().bodyToMono(UserDetailsUser.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
