@@ -1,8 +1,8 @@
-CREATE DATABASE classifier_service;
+CREATE DATABASE classifier;
 
 GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;
 
-\connect classifier_service
+\connect classifier;
 CREATE SCHEMA IF NOT EXISTS directory
     AUTHORIZATION postgres;
 
