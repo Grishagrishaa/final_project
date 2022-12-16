@@ -1,16 +1,11 @@
 package com.example.afisha.security;
 
 import com.example.afisha.exceptions.MyRoleNotFoundException;
-import com.example.afisha.security.utils.ERole;
+import com.example.afisha.security.enums.ERole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import javax.management.relation.RoleInfoNotFoundException;
-import javax.management.relation.RoleNotFoundException;
-import javax.naming.AuthenticationException;
-import javax.naming.NamingException;
 
 
 @Component
@@ -40,8 +35,8 @@ public class UserHolder {
     }
 
     public ERole getAuthority(){
-        if(!isAuthenticated()){
-            return null;
+        if(!isAuthenticated()){//todo contains
+            return ERole.DEF;
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

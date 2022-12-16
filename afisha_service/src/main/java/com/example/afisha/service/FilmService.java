@@ -5,13 +5,13 @@ import com.example.afisha.dao.entity.BaseEvent;
 import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.security.UserHolder;
-import com.example.afisha.security.utils.ERole;
 import com.example.afisha.service.api.IEventService;
-import com.example.afisha.validation.FilmValidationPredicate;
 import com.example.afisha.validation.OwnershipPredicate;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 
 import static com.example.afisha.dao.entity.enums.EventStatus.*;
 
@@ -30,14 +31,12 @@ public class FilmService implements IEventService<Film> {
     private static final Logger log = LoggerFactory.getLogger(FilmService.class);
     private final IEventFilmDao filmDao;
     private final ModelMapper mapper;
-    private final FilmValidationPredicate filmValidator;
-    private final OwnershipPredicate ownerValidator;
+    private final BiPredicate<String, String> ownerValidator;
     private final UserHolder userHolder;
 
-    public FilmService(IEventFilmDao filmDao, ModelMapper mapper, FilmValidationPredicate filmValidator, OwnershipPredicate ownerValidator, UserHolder userHolder) {
+    public FilmService(IEventFilmDao filmDao, ModelMapper mapper, OwnershipPredicate ownerValidator, UserHolder userHolder) {
         this.filmDao = filmDao;
         this.mapper = mapper;
-        this.filmValidator = filmValidator;
         this.ownerValidator = ownerValidator;
         this.userHolder = userHolder;
     }
@@ -45,14 +44,15 @@ public class FilmService implements IEventService<Film> {
 
     @Override
     @Transactional
-    public void save(BaseEvent event) {
+    @CachePut(cacheNames = "film")
+    public Film save(BaseEvent event) {
         Film film = (Film) event;
-        filmValidator.test(film);
-        log.info("SAVE FILM " + film);
-        filmDao.save(film);
+        log.info("SAVE FILM - {}", film);
+        return filmDao.save(film);
     }
 
     @Override
+    @Cacheable(cacheNames = "film")
     public Film get(UUID uuid) {
 
         switch (userHolder.getAuthority()){
@@ -70,8 +70,8 @@ public class FilmService implements IEventService<Film> {
     }
 
     @Override
+    @Cacheable(cacheNames = "film")
     public Page<? extends BaseEvent> getAll(Pageable pageable) {
-
         switch (userHolder.getAuthority()){
             case ADMIN:
                 return filmDao.findAll(pageable);
@@ -80,12 +80,12 @@ public class FilmService implements IEventService<Film> {
             default:
                 return filmDao.findAllByStatusIs(PUBLISHED, pageable);
         }
-
     }
 
     @Override
     @Transactional
-    public void update(SaveEventDtoFactory eventDto, UUID uuid, LocalDateTime updateDate) {
+    @CachePut(cacheNames = "film")
+    public Film update(SaveEventDtoFactory eventDto, UUID uuid, LocalDateTime updateDate) {
         Film film = get(uuid);
         ownerValidator.test(film.getAuthor(), UserHolder.getUsername());
 
@@ -95,11 +95,9 @@ public class FilmService implements IEventService<Film> {
             throw new OptimisticLockException("FILM WAS ALREADY UPDATED");
         }
 
-        filmValidator.testUpdate(filmUpdate);
-
         mapper.map(filmUpdate, film);
-        log.info("SAVE UPDATED FILM " + film);
+        log.info("SAVE UPDATED FILM - {}", film);
 
-        filmDao.save(film);
+        return filmDao.save(film);
     }
 }

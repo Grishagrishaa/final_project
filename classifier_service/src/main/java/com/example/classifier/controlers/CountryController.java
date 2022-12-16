@@ -1,10 +1,11 @@
 package com.example.classifier.controlers;
 
-import com.example.classifier.controlers.pagination.MyPage;
+import com.example.classifier.controlers.api.IClassifierController;
 import com.example.classifier.dao.entity.Country;
-import com.example.classifier.dto.SaveCountryDto;
+import com.example.classifier.service.dto.MyPage;
+import com.example.classifier.service.dto.SaveCountryDto;
 import com.example.classifier.service.api.IClassifierService;
-import org.modelmapper.ModelMapper;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,20 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 @RestController
-@RequestMapping("/classifier/country")
-public class CountryController {
-    private final IClassifierService<Country> service;
-    private final Predicate<SaveCountryDto> validator;
-    private final ModelMapper mapper;
+@RequestMapping("${app.country.url}")
+public class CountryController implements IClassifierController<Country, SaveCountryDto> {
+    private final IClassifierService<Country, SaveCountryDto> service;
+    private final ConversionService conversionService;
 
-    public CountryController(IClassifierService<Country> service, Predicate<SaveCountryDto> validator,
-                             ModelMapper mapper) {
+    public CountryController(IClassifierService<Country, SaveCountryDto> service,
+                             ConversionService conversionService) {
         this.service = service;
-        this.validator = validator;
-        this.mapper = mapper;
+        this.conversionService = conversionService;
     }
 
     @GetMapping("/{uuid}")
@@ -40,14 +38,11 @@ public class CountryController {
 
         Page<Country> springPage = service.getAll(PageRequest.of(page, size, Sort.by("createDate").descending()));
 
-        return new ResponseEntity<MyPage<Country>>(mapper.map(springPage, MyPage.class), HttpStatus.OK);
+        return new ResponseEntity<MyPage<Country>>(conversionService.convert(springPage, MyPage.class), HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody SaveCountryDto countryDto){
-        validator.test(countryDto);
-
-        service.save(mapper.map(countryDto, Country.class));
+    public ResponseEntity<Country> create(@RequestBody SaveCountryDto countryDto){
+        return new ResponseEntity<>(service.save(countryDto), HttpStatus.CREATED);
     }
 }

@@ -3,9 +3,7 @@ package com.example.afisha.controllers.handler;
 import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.dto.errors.StructuredError;
 import com.example.afisha.exceptions.MyRoleNotFoundException;
-import com.example.afisha.exceptions.MyValidationException;
 import io.netty.handler.timeout.ReadTimeoutException;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.hibernate.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.OptimisticLockException;
+import javax.validation.ConstraintViolationException;
 
 import java.net.ConnectException;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -100,9 +100,13 @@ public class ControllerAdvice {
         );
     }
 
-    @ExceptionHandler(MyValidationException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
-    public StructuredError handle(MyValidationException e){
-        return new StructuredError(e.getErrorMessages());
+    public StructuredError handle(ConstraintViolationException e){
+        return new StructuredError(e.getConstraintViolations().stream()
+                .map(exc -> new ErrorMessage(
+                        exc.getPropertyPath().toString().split("\\.")[2],
+                        exc.getMessage()))
+                .collect(Collectors.toSet()));
     }
 }

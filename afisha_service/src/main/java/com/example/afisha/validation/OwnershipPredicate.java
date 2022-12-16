@@ -1,7 +1,7 @@
 package com.example.afisha.validation;
 
 import com.example.afisha.security.UserHolder;
-import com.example.afisha.security.utils.ERole;
+import com.example.afisha.security.enums.ERole;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiPredicate;

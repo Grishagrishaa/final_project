@@ -1,10 +1,11 @@
 package com.example.classifier.controlers;
 
-import com.example.classifier.controlers.pagination.MyPage;
+import com.example.classifier.controlers.api.IClassifierController;
 import com.example.classifier.dao.entity.ConcertCategory;
-import com.example.classifier.dto.SaveConcertCategoryDto;
+import com.example.classifier.service.dto.MyPage;
+import com.example.classifier.service.dto.SaveConcertCategoryDto;
 import com.example.classifier.service.api.IClassifierService;
-import org.modelmapper.ModelMapper;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,21 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 @RestController
-@RequestMapping("/classifier/concert/category")
-public class ConcertCategoryController {
-    private final Predicate<SaveConcertCategoryDto> validator;
-    private final IClassifierService<ConcertCategory> service;
-    private final ModelMapper mapper;
+@RequestMapping("${app.concertCategory.url}")
+public class ConcertCategoryController implements IClassifierController<ConcertCategory, SaveConcertCategoryDto> {
+    private final IClassifierService<ConcertCategory, SaveConcertCategoryDto> service;
+    private final ConversionService conversionService;
 
 
-    public ConcertCategoryController(Predicate<SaveConcertCategoryDto> validator,
-                                     IClassifierService<ConcertCategory> service, ModelMapper mapper) {
-        this.validator = validator;
+    public ConcertCategoryController(IClassifierService<ConcertCategory, SaveConcertCategoryDto> service, ConversionService conversionService) {
         this.service = service;
-        this.mapper = mapper;
+        this.conversionService = conversionService;
     }
 
     @GetMapping("/{uuid}")
@@ -35,19 +32,17 @@ public class ConcertCategoryController {
         return new ResponseEntity<>(service.get(uuid), HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<MyPage<ConcertCategory>> getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                           @RequestParam(required = false, defaultValue = "10", name = "size") Integer size){
 
         Page<ConcertCategory> springPage = service.getAll(PageRequest.of(page, size, Sort.by("createDate").descending()));
 
-        return new ResponseEntity<MyPage<ConcertCategory>>(mapper.map(springPage, MyPage.class ), HttpStatus.OK);
+        return new ResponseEntity<MyPage<ConcertCategory>>(conversionService.convert(springPage, MyPage.class ), HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody SaveConcertCategoryDto categoryDto){
-        validator.test(categoryDto);
-        service.save(mapper.map(categoryDto, ConcertCategory.class));
+    public ResponseEntity<ConcertCategory> create(@RequestBody SaveConcertCategoryDto categoryDto){
+        return new ResponseEntity<>(service.save(categoryDto), HttpStatus.CREATED);
     }
 }

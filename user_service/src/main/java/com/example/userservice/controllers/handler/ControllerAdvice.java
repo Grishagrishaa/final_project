@@ -2,7 +2,6 @@ package com.example.userservice.controllers.handler;
 
 
 import com.example.userservice.dto.errors.ErrorMessage;
-import com.example.userservice.dto.MyValidationException;
 import com.example.userservice.dto.errors.StructuredError;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
@@ -13,9 +12,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.OptimisticLockException;
+import javax.validation.ConstraintViolationException;
+
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -60,12 +61,14 @@ public class ControllerAdvice {
         return new ErrorMessage(e.getServerErrorMessage().getDetail());
     }
 
-
-    @ExceptionHandler(MyValidationException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
-    public StructuredError handle(MyValidationException e){
-        return new StructuredError(e.getErrorMessages());
+    public StructuredError handle(ConstraintViolationException e){
+        return new StructuredError(e.getConstraintViolations().stream()
+                .map(exc -> new ErrorMessage(
+                        exc.getPropertyPath().toString().split("\\.")[2],
+                        exc.getMessage()))
+                .collect(Collectors.toSet()));
     }
-
 }
 

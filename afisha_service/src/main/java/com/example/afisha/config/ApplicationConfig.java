@@ -1,5 +1,6 @@
 package com.example.afisha.config;
 
+import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -10,6 +11,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,27 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class ApplicationConfig {
-
-    @Value("${app.classifier.url}")
-    private String BASE_URL;
-    public static final int TIMEOUT = 10000;
-
-    @Bean
-    public WebClient webClientWithTimeout() {
-        final var tcpClient = TcpClient
-                .create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT)
-                .doOnConnected(connection -> {
-                    connection.addHandlerLast(new ReadTimeoutHandler(TIMEOUT, TimeUnit.MILLISECONDS));
-                    connection.addHandlerLast(new WriteTimeoutHandler(TIMEOUT, TimeUnit.MILLISECONDS));
-                });
-
-        return WebClient.builder()
-                .baseUrl(BASE_URL)
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
-                .build();
-    }
-
 
     @Bean(name = "objectMapper")
     public ObjectMapper objectMapper(){
@@ -67,7 +48,18 @@ public class ApplicationConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.getConfiguration()
+                .setAmbiguityIgnored(true)
+                .setSkipNullEnabled(false);
+        modelMapper.addMappings(
+                new PropertyMap<Film, Film>() {
+            @Override
+            protected void configure() {
+                skip(destination.getUuid());
+                skip(destination.getUpdateDate());
+                skip(destination.getCreateDate());
+            }
+        });
         return modelMapper;
     }
 }

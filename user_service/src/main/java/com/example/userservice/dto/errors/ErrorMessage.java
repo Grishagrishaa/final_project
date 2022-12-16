@@ -2,6 +2,8 @@ package com.example.userservice.dto.errors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorMessage {
     private String logref;
@@ -40,5 +42,18 @@ public class ErrorMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ErrorMessage that = (ErrorMessage) o;
+        return Objects.equals(logref, that.logref) && Objects.equals(field, that.field) && Objects.equals(message, that.message);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(logref, field, message);
     }
 }

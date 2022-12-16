@@ -1,12 +1,12 @@
 package com.example.userservice.dto.errors;
 
-import java.util.List;
+import java.util.Set;
 
 public class StructuredError {
     private final String logref;
-    private final List<ErrorMessage> errors;
+    private final Set<ErrorMessage> errors;
 
-    public StructuredError(List<ErrorMessage> errors) {
+    public StructuredError(Set<ErrorMessage> errors) {
         this.logref = "structured_error";
         this.errors = errors;
     }
@@ -15,7 +15,7 @@ public class StructuredError {
         return logref;
     }
 
-    public List<ErrorMessage> getErrors() {
+    public Set<ErrorMessage> getErrors() {
         return errors;
     }
 }

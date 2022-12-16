@@ -6,13 +6,13 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 
-public interface IClassifierService<E> {//E -> ENTITY (COUNTRY OR CATEGORY)
+public interface IClassifierService<E, D> {//E -> ENTITY (COUNTRY OR CATEGORY)
 
     /**
      * Saving entity in db
      * @param record Entity provided for save
      */
-    void save(E record);
+    E save(D record);
 
     /**
      *

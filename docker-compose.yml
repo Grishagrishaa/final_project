@@ -33,16 +33,19 @@ services:
   event-service:
     build: afisha_service
     image: afisha_service:1.0.0
+    restart: always
     networks:
       - afisha_ntwrk
   classifier-service:
     build: classifier_service
     image: classifier_service:1.0.0
+    restart: always
     networks:
       - afisha_ntwrk
   user-service:
       build: user_service
       image: user_service:1.0.0
+      restart: always
       networks:
         - afisha_ntwrk
 

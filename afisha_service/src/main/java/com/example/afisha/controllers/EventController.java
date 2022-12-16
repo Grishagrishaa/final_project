@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -25,14 +26,14 @@ import static org.springframework.http.HttpStatus.*;
 //VALIDATOR AS EXTERNAL CLASS
 //CONVERTER SERVICE
 @RestController
-@RequestMapping("/afisha/event")
+@RequestMapping("${app.events.url}")
 public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
     private final IDecoratorService service;
-    private final UrlTypeValidationPredicate urlTypeValidator;
+    private final Predicate<String> urlTypeValidator;
     private final ModelMapper mapper;
 
-    public EventController(IDecoratorService service, UrlTypeValidationPredicate urlTypeValidator, ModelMapper mapper) {
+    public  EventController(IDecoratorService service, UrlTypeValidationPredicate urlTypeValidator, ModelMapper mapper) {
         this.service = service;
         this.urlTypeValidator = urlTypeValidator;
         this.mapper = mapper;
@@ -44,7 +45,7 @@ public class EventController {
 
         urlTypeValidator.test(urlType);//check isValid url
 
-        BaseEvent event = service.get(uuid, EventType.valueOf(urlType));
+        BaseEvent event = service.get(uuid, urlType);
         log.info("GET EVENT");
 
         if (!EventType.valueOf(urlType).equals(event.getType())){//сравнение типов в боди на отдачу и урле
@@ -62,7 +63,7 @@ public class EventController {
         urlTypeValidator.test(urlType);
 
         log.info("GET PAGE");
-        Page<? extends BaseEvent> eventsPage = service.getAll(EventType.valueOf(urlType), PageRequest.of(page, size, Sort.by("createDate").descending()));
+        Page<? extends BaseEvent> eventsPage = service.getAll(urlType, PageRequest.of(page, size, Sort.by("createDate").descending()));
 
         return new ResponseEntity<MyPage<? extends BaseEvent>>(mapper.map(eventsPage, MyPage.class), OK);
     }

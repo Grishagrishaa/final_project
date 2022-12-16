@@ -1,12 +1,7 @@
 package com.example.afisha.dao.entity;
 
-import com.example.afisha.dao.entity.enums.EventStatus;
-import com.example.afisha.dao.entity.enums.EventType;
-import com.example.afisha.dao.entity.utils.LocalDateTimeDeserializer;
 import com.example.afisha.dao.entity.utils.LocalDateTimeSerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,18 +35,14 @@ public abstract class BaseEvent{
     private String description;
     private LocalDateTime eventDate;
     private LocalDateTime dateEndOfSale;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EventType type;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EventStatus status;
+    private String type;
+    private String status;
     @JsonIgnore
     private String author;
 
     public BaseEvent(String title, String description,
                      LocalDateTime eventDate, LocalDateTime dateEndOfSale,
-                     EventType type, EventStatus status,
+                     String type, String status,
                      String author) {
         this.title = title;
         this.description = description;
@@ -121,19 +112,19 @@ public abstract class BaseEvent{
         this.dateEndOfSale = dateEndOfSale;
     }
 
-    public EventType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(EventType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public EventStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(EventStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

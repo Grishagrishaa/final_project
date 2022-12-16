@@ -1,5 +1,6 @@
 package com.example.userservice.controllers;
 
+import com.example.userservice.controllers.api.IUserController;
 import com.example.userservice.dao.entity.User;
 import com.example.userservice.dto.JwtResponse;
 import com.example.userservice.dto.users.LoginDto;
@@ -9,8 +10,8 @@ import com.example.userservice.controllers.pagination.MyPage;
 import com.example.userservice.security.UserHolder;
 import com.example.userservice.service.UserService;
 import com.example.userservice.security.utils.JwtTokenUtil;
-import org.modelmapper.ModelMapper;
-import org.springframework.core.convert.converter.Converter;
+import com.example.userservice.service.api.IUserService;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -24,34 +25,32 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
-    private final ModelMapper mapper;
-    private final Converter<SignDto, SaveUserDto> toSaveDto;
-    private final UserService service;
+@RequestMapping("${app.users.url}")
+public class UserController implements IUserController {
+    private final ConversionService conversionService;
+    private final IUserService service;
     private final UserHolder holder;
     private final PasswordEncoder encoder;
 
-    public UserController(ModelMapper mapper, Converter<SignDto, SaveUserDto> toSaveDto,
+    public UserController(ConversionService conversionService,
                           UserService service,
                           UserHolder holder,
                           PasswordEncoder encoder) {
-        this.mapper = mapper;
-        this.toSaveDto = toSaveDto;
+        this.conversionService = conversionService;
         this.service = service;
         this.holder = holder;
         this.encoder = encoder;
     }
     @PostMapping()
-    @ResponseStatus(CREATED)
-    private void create(@RequestBody SaveUserDto dto){
-        service.createUser(dto);
+    public ResponseEntity<User> create(@RequestBody SaveUserDto dto){
+        User user = service.createUser(dto);
+        return new ResponseEntity<>(user, CREATED);
     }
 
     @GetMapping
-    public ResponseEntity getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
-                                 @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
-        return new ResponseEntity<>(mapper.map(
+    public ResponseEntity<MyPage<User>> getAll(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
+                                               @RequestParam(required = false, defaultValue = "5", name = "size") Integer size){
+        return new ResponseEntity<MyPage<User>>(conversionService.convert(
                 service.loadAll(PageRequest.of(page, size, Sort.by("createDate").descending())),
                 MyPage.class),
                 OK);
@@ -63,18 +62,18 @@ public class UserController {
     }
 
     @PutMapping("/{uuid}/dt_update/{dt_update}")
-    @ResponseStatus(OK)
-    public void update(@PathVariable UUID uuid, @PathVariable LocalDateTime dt_update, @RequestBody SaveUserDto userDto){
-        service.updateUser(uuid, dt_update, userDto);
+    public ResponseEntity<User> update(@PathVariable UUID uuid, @PathVariable LocalDateTime dt_update, @RequestBody SaveUserDto userDto){
+        User user = service.updateUser(uuid, dt_update, userDto);
+        return new ResponseEntity<>(user, OK);
     }
 
 
 
 
     @PostMapping("/registration")
-    @ResponseStatus(CREATED)
-    public void registration(@RequestBody SignDto dto){
-        service.createUser(toSaveDto.convert(dto));
+    public ResponseEntity registration(@RequestBody SignDto dto){
+        service.createUser(conversionService.convert(dto, SaveUserDto.class));
+        return new ResponseEntity<>(CREATED);
     }
 
     @PostMapping("/login")
@@ -91,8 +90,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDetails details(){
-        return holder.getUser();
+    public ResponseEntity<UserDetails> details(){
+        return new ResponseEntity<>(holder.getUser(), CREATED);
     }
 
 }

@@ -2,15 +2,28 @@ package com.example.userservice.dto.users;
 
 import com.example.userservice.dao.entity.Role;
 import com.example.userservice.dao.entity.enums.EStatus;
+import com.example.userservice.service.validators.api.ValueOfEnum;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class SaveUserDto {
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 10)
     private String nick;
+    @Email
     private String mail;
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 15)
     private String password;
     private Set<Role> roles;
-    private EStatus status;
+    @ValueOfEnum(enumClass = EStatus.class, message = "Incorrect status")
+    private String status;
 
     public SaveUserDto() {//cant set private cause JACKSON REQUIRE public
     }
@@ -39,7 +52,7 @@ public class SaveUserDto {
         return roles;
     }
 
-    public EStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -48,7 +61,7 @@ public class SaveUserDto {
         private String mail;
         private String password;
         private Set<Role> roles;
-        private EStatus status;
+        private String status;
 
         public Builder() {
         }
@@ -73,7 +86,7 @@ public class SaveUserDto {
             return this;
         }
 
-        public Builder setStatus(EStatus status) {
+        public Builder setStatus(String status) {
             this.status = status;
             return this;
         }

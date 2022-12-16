@@ -1,8 +1,6 @@
 package com.example.userservice.converters;
 
-import com.example.userservice.dao.entity.Role;
 import com.example.userservice.dao.entity.User;
-import com.example.userservice.dao.entity.enums.ERole;
 import com.example.userservice.dao.entity.enums.EStatus;
 import com.example.userservice.dto.users.SaveUserDto;
 import org.springframework.core.convert.converter.Converter;
@@ -26,16 +24,7 @@ public class SaveUserDtoToUserConverter implements Converter<SaveUserDto, User> 
         user.setMail(source.getMail());
         user.setPassword(encoder.encode(source.getPassword()));
         user.setRoles(source.getRoles());
-        user.setStatus(source.getStatus());
-        return user;
-    }
-
-    public User update(User user, SaveUserDto source) {
-        if(source.getMail() != null) user.setMail(source.getMail());
-        if(source.getNick() != null) user.setNick(source.getNick());
-        if(source.getPassword() != null) user.setPassword(encoder.encode(source.getPassword()));
-        if(source.getRoles() != null) user.setRoles(source.getRoles());
-        if(source.getStatus() != null) user.setStatus(source.getStatus());
+        user.setStatus(EStatus.valueOf(source.getStatus()));
         return user;
     }
 }

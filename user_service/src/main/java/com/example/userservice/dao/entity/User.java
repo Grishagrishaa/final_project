@@ -41,6 +41,8 @@ public class User extends BaseRecord{
     public User() {
     }
 
+
+
     public String getMail() {
         return mail;
     }

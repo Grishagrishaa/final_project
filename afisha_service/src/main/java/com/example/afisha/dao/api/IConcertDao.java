@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface IConcertDao extends JpaRepository<Concert, UUID> {
+public interface IConcertDao extends JpaRepository<Concert, UUID> {//todo generic
     /**
      * AUTHORIZED
      * @param status Concert Status

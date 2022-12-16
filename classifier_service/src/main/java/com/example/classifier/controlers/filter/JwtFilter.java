@@ -1,7 +1,7 @@
 package com.example.classifier.controlers.filter;
 
-import com.example.classifier.security.UserServiceImpl;
 import com.example.classifier.security.utils.JwtTokenUtil;
+import com.example.classifier.service.rest.api.IRestService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,9 +22,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserServiceImpl service;
+    private final IRestService service;
 
-    public JwtFilter(UserServiceImpl service) {
+    public JwtFilter(IRestService service) {
         this.service = service;
     }
 

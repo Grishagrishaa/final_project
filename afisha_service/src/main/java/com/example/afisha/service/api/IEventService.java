@@ -13,9 +13,11 @@ public interface IEventService<E> {//E - Event entity (Concert, Film ... )
 
     /**
      * Save event in db
+     *
      * @param event event provided to save in db
+     * @return
      */
-    void save(BaseEvent event);//CREATE
+    E save(BaseEvent event);//CREATE
 
     /**
      * @param uuid event id
@@ -31,10 +33,10 @@ public interface IEventService<E> {//E - Event entity (Concert, Film ... )
     Page<? extends BaseEvent> getAll(Pageable pageable);//READ
 
     /**
-     *
-     * @param event provided event with fields needed to update
-     * @param uuid event id
+     * @param event      provided event with fields needed to update
+     * @param uuid       event id
      * @param updateDate date, when event was updated last time
+     * @return
      */
-    void update(SaveEventDtoFactory event, UUID uuid, LocalDateTime updateDate);//UPDATE
+    E update(SaveEventDtoFactory event, UUID uuid, LocalDateTime updateDate);//UPDATE
 }

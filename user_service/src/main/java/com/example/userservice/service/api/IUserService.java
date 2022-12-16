@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,18 +27,18 @@ public interface IUserService extends UserDetailsService {
     Page<User> loadAll(Pageable pageable);
 
     /**
-     *
-     * @param user  user provided for saving in db
+     * @param user user provided for saving in db
+     * @return
      */
-    void createUser(SaveUserDto user);
+    User createUser(@Valid SaveUserDto user);
 
     /**
-     *
-     * @param uuid  user id
-     * @param updateDate  date, when user was updated last time
-     * @param userDto  dto, provided with fields needed to update
+     * @param uuid       user id
+     * @param updateDate date, when user was updated last time
+     * @param userDto    dto, provided with fields needed to update
+     * @return
      */
-    void updateUser(UUID uuid, LocalDateTime updateDate, SaveUserDto userDto);
+    User updateUser(UUID uuid, LocalDateTime updateDate,@Valid SaveUserDto userDto);
 
     /**
      *

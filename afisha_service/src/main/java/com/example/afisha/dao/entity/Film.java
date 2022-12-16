@@ -1,8 +1,5 @@
 package com.example.afisha.dao.entity;
 
-import com.example.afisha.dao.entity.enums.EventStatus;
-import com.example.afisha.dao.entity.enums.EventType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -21,7 +18,7 @@ public class Film extends BaseEvent {
 
     public Film(String title, String description,
                 LocalDateTime eventDate, LocalDateTime dateEndOfSale,
-                EventType type, EventStatus status,
+                String type, String status,
                 String author,
                 UUID country,
                 Integer releaseYear, LocalDateTime releaseDate,

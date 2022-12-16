@@ -2,6 +2,7 @@ package com.example.afisha.controllers.filters;
 
 import com.example.afisha.security.utils.JwtTokenUtil;
 import com.example.afisha.service.api.IDecoratorService;
+import com.example.afisha.service.rest.api.IRestService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,9 +23,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final IDecoratorService service;
+    private final IRestService service;
 
-    public JwtFilter(IDecoratorService service) {
+    public JwtFilter(IRestService service) {
         this.service = service;
     }
 
