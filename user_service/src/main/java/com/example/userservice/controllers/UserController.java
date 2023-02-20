@@ -11,6 +11,7 @@ import com.example.userservice.security.UserHolder;
 import com.example.userservice.service.UserService;
 import com.example.userservice.security.utils.JwtTokenUtil;
 import com.example.userservice.service.api.IUserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

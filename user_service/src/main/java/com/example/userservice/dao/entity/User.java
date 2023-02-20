@@ -1,17 +1,9 @@
 package com.example.userservice.dao.entity;
 
 import com.example.userservice.dao.entity.enums.EStatus;
-import com.example.userservice.dao.entity.utils.LocalDateTimeDeserializer;
-import com.example.userservice.dao.entity.utils.LocalDateTimeSerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity

@@ -3,6 +3,8 @@ services:
   db:
     build: postgresql
     image: afisha_postgresql:1.0.0
+    ports: 
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_USER: postgres

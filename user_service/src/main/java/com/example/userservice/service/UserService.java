@@ -1,12 +1,12 @@
 package com.example.userservice.service;
 
-import com.example.userservice.dao.entity.Role;
 import com.example.userservice.dao.api.IUserDao;
+import com.example.userservice.dao.entity.Role;
 import com.example.userservice.dao.entity.User;
 import com.example.userservice.dto.users.SaveUserDto;
 import com.example.userservice.security.UserDetailsUser;
 import com.example.userservice.service.api.IUserService;
-import org.hibernate.Hibernate;
+import jakarta.persistence.OptimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.OptimisticLockException;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

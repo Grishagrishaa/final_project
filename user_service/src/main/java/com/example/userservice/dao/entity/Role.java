@@ -2,11 +2,9 @@ package com.example.userservice.dao.entity;
 
 import com.example.userservice.dao.entity.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "roles", schema = "signed", uniqueConstraints = {

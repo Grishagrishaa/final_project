@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 //@Profile("dev")
 @EnableWebMvc
 @SpringBootApplication
-public class UserServiceApplication extends SpringBootServletInitializer{
+public class UserServiceApplication{
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);
     }

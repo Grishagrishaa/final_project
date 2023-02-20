@@ -22,7 +22,6 @@ public class SaveUserDto {
     @Size(min = 2, max = 15)
     private String password;
     private Set<Role> roles;
-    @ValueOfEnum(enumClass = EStatus.class, message = "Incorrect status")
     private String status;
 
     public SaveUserDto() {//cant set private cause JACKSON REQUIRE public
