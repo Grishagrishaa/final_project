@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.OptimisticLockException;
+import jakarta.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.BiPredicate;
@@ -55,31 +55,25 @@ public class FilmService implements IEventService<Film> {
     @Cacheable(cacheNames = "film")
     public Film get(UUID uuid) {
 
-        switch (userHolder.getAuthority()){
-            case ADMIN:
-                return filmDao.findById(uuid)//ADMIN
-                              .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND") );
-            case USER:
-                return filmDao.findByUuidIsOrStatusIsOrAuthorIs(uuid, PUBLISHED, UserHolder.getUsername())
-                               .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND ") );
-            default:
-                return filmDao.findByUuidIsAndStatusIs(uuid, PUBLISHED)
-                              .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND ") );
-        }
+        return switch (userHolder.getAuthority()) {
+            case ADMIN -> filmDao.findById(uuid)//ADMIN
+                    .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND"));
+            case USER -> filmDao.findByUuidIsOrStatusIsOrAuthorIs(uuid, PUBLISHED, UserHolder.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND "));
+            default -> filmDao.findByUuidIsAndStatusIs(uuid, PUBLISHED)
+                    .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND "));
+        };
 
     }
 
     @Override
     @Cacheable(cacheNames = "film")
     public Page<? extends BaseEvent> getAll(Pageable pageable) {
-        switch (userHolder.getAuthority()){
-            case ADMIN:
-                return filmDao.findAll(pageable);
-            case USER:
-                return filmDao.findAllByStatusIsOrAuthorIs(PUBLISHED, UserHolder.getUsername(), pageable);
-            default:
-                return filmDao.findAllByStatusIs(PUBLISHED, pageable);
-        }
+        return switch (userHolder.getAuthority()) {
+            case ADMIN -> filmDao.findAll(pageable);
+            case USER -> filmDao.findAllByStatusIsOrAuthorIs(PUBLISHED, UserHolder.getUsername(), pageable);
+            default -> filmDao.findAllByStatusIs(PUBLISHED, pageable);
+        };
     }
 
     @Override

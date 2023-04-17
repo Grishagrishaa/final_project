@@ -15,20 +15,10 @@ public class UserHolder {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-//    public String getUsername() {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        return  userDetails.getUsername();
-//    }
-
     public static String getUsername() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return  userDetails.getUsername();
     }
-    /**
-     * boolean isAuthenticated()
-     * @return false if user - anonymous (did not authorize)
-     *  true authorized
-     */
 
     private boolean isAuthenticated(){
         return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser");

@@ -1,6 +1,5 @@
 package com.example.afisha.dao.api;
 
-import com.example.afisha.dao.entity.Concert;
 import com.example.afisha.dao.entity.Film;
 import com.example.afisha.dao.entity.enums.EventStatus;
 import org.springframework.data.domain.Page;

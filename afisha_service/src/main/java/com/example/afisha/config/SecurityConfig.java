@@ -1,17 +1,21 @@
 package com.example.afisha.config;
 
 import com.example.afisha.controllers.filters.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+public class SecurityConfig{
     private final JwtFilter filter;
     private static final String AFISHA_ENDPOINTS = "/afisha/event/**";
 
@@ -20,16 +24,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.filter = filter;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http = http.csrf().disable().cors().disable();
-
-        http = http.sessionManagement()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf().disable().cors().disable()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
-
-        // Set unauthorized requests exception handler
-        http = http
+                .and()
+                .addFilterBefore(
+                        filter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, ex) -> {
@@ -39,18 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             );
                         }
                 )
-                .and();
-
-        http.authorizeRequests()
-                .antMatchers().permitAll()
-                .antMatchers(HttpMethod.GET,AFISHA_ENDPOINTS).permitAll()
-                .antMatchers(HttpMethod.POST,AFISHA_ENDPOINTS).authenticated()
-
-                .anyRequest().authenticated();
-
-        http.addFilterBefore(
-                filter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+                .and()
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET,AFISHA_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST,AFISHA_ENDPOINTS).authenticated()
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic(Customizer.withDefaults()) // (4)
+                .build();
     }
 }

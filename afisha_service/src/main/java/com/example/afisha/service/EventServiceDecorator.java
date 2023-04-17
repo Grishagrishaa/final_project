@@ -54,13 +54,10 @@ public class EventServiceDecorator implements IDecoratorService {
     @Override
     public IEventService<? extends BaseEvent> getService(String type) {
         EventType eventType = valueOf(type);
-        switch (eventType){
-            case FILM:
-                return filmService;
-            case CONCERT:
-                return concertService;
-            default:
-                throw new TypeMismatchException("INTERNAL SERVER ERROR | CANNOT RECOGNIZE TYPE OF EVENT");
-        }
+        return switch (eventType) {
+            case FILM -> filmService;
+            case CONCERT -> concertService;
+            default -> throw new TypeMismatchException("INTERNAL SERVER ERROR | CANNOT RECOGNIZE TYPE OF EVENT");
+        };
     }
 }

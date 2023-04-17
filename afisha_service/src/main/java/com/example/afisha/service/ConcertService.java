@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.OptimisticLockException;
+import jakarta.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.BiPredicate;
@@ -53,17 +53,17 @@ public class ConcertService implements IEventService<Concert> {
     @Cacheable(cacheNames = "concert")
     public Concert get(UUID uuid) {
 
-        switch (userHolder.getAuthority()){
-            case ADMIN://ADMIN
-                return concertDao.findById(uuid)
-                              .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND") );
-            case USER://AUTHORIZED - USER
-                return concertDao.findByUuidIsOrStatusIsOrAuthorIs(uuid, PUBLISHED, UserHolder.getUsername())
-                               .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND ") );
-            default: //NOT AUTHORIZED
-                return concertDao.findByUuidIsAndStatusIs(uuid, PUBLISHED)
-                              .orElseThrow( () -> new IllegalArgumentException("FILM WASN'T FOUND ") );
-        }
+        return switch (userHolder.getAuthority()) {
+            case ADMIN ->//ADMIN
+                    concertDao.findById(uuid)
+                            .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND"));
+            case USER ->//AUTHORIZED - USER
+                    concertDao.findByUuidIsOrStatusIsOrAuthorIs(uuid, PUBLISHED, UserHolder.getUsername())
+                            .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND "));
+            default -> //NOT AUTHORIZED
+                    concertDao.findByUuidIsAndStatusIs(uuid, PUBLISHED)
+                            .orElseThrow(() -> new IllegalArgumentException("FILM WASN'T FOUND "));
+        };
 
     }
 
@@ -71,14 +71,14 @@ public class ConcertService implements IEventService<Concert> {
     @Cacheable(cacheNames = "concert")
     public Page<? extends BaseEvent> getAll(Pageable pageable) {
 
-        switch (userHolder.getAuthority()){
-            case ADMIN://ADMIN
-                return concertDao.findAll(pageable);
-            case USER://AUTHORIZED - USER
-                return concertDao.findAllByStatusIsOrAuthorIs(PUBLISHED, UserHolder.getUsername(), pageable);
-            default:  //NOT AUTHORIZED
-                return concertDao.findAllByStatusIs(PUBLISHED, pageable);
-        }
+        return switch (userHolder.getAuthority()) {
+            case ADMIN ->//ADMIN
+                    concertDao.findAll(pageable);
+            case USER ->//AUTHORIZED - USER
+                    concertDao.findAllByStatusIsOrAuthorIs(PUBLISHED, UserHolder.getUsername(), pageable);
+            default ->  //NOT AUTHORIZED
+                    concertDao.findAllByStatusIs(PUBLISHED, pageable);
+        };
 
     }
 

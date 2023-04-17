@@ -9,14 +9,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @EnableJpaAuditing
 @EnableCaching
 @EnableTransactionManagement
-@EnableJpaRepositories("com.example.userservice.dao.api")
-//@Profile("dev")
-@EnableWebMvc
 @SpringBootApplication
+@EnableSwagger2WebMvc
 public class UserServiceApplication{
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);

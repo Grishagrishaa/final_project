@@ -4,17 +4,14 @@ import com.example.afisha.dto.errors.ErrorMessage;
 import com.example.afisha.dto.errors.StructuredError;
 import com.example.afisha.exceptions.MyRoleNotFoundException;
 import io.netty.handler.timeout.ReadTimeoutException;
-import org.hibernate.TypeMismatchException;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.persistence.OptimisticLockException;
-import javax.validation.ConstraintViolationException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.ConnectException;
 import java.util.stream.Collectors;
@@ -23,7 +20,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
-public class ControllerAdvice {
+public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(BAD_REQUEST)
@@ -31,7 +28,6 @@ public class ControllerAdvice {
         return new ErrorMessage(
                 e.getMessage()
         );
-
     }
 
     @ExceptionHandler(OptimisticLockException.class)
@@ -39,14 +35,6 @@ public class ControllerAdvice {
     public ErrorMessage handle(OptimisticLockException e){
         return new ErrorMessage(
                 e.getMessage()
-        );
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(HttpMessageNotReadableException e){
-        return new ErrorMessage(
-                e.getLocalizedMessage()
         );
     }
 
@@ -59,26 +47,9 @@ public class ControllerAdvice {
         );
     }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(HttpRequestMethodNotSupportedException e){
-        return new ErrorMessage(
-                "CHECK URL"
-        );
-    }
-
-    //TODO MYROLE EXCEPT, TYPENOTFOUNDEXC
     @ExceptionHandler(MyRoleNotFoundException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(MyRoleNotFoundException e){
-        return new ErrorMessage(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler(TypeMismatchException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(TypeMismatchException e){
         return new ErrorMessage(
                 e.getMessage()
         );

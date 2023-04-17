@@ -36,4 +36,4 @@ CREATE TABLE IF NOT EXISTS events.films
     release_date timestamp without time zone,
     release_year integer,
     CONSTRAINT films_pkey PRIMARY KEY (uuid)
-);
+)

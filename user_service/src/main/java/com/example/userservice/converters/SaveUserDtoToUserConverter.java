@@ -3,7 +3,6 @@ package com.example.userservice.converters;
 import com.example.userservice.dao.entity.User;
 import com.example.userservice.dao.entity.enums.EStatus;
 import com.example.userservice.dto.users.SaveUserDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,9 @@ public class SaveUserDtoToUserConverter implements Converter<SaveUserDto, User> 
         user.setMail(source.getMail());
         user.setPassword(encoder.encode(source.getPassword()));
         user.setRoles(source.getRoles());
-        user.setStatus(EStatus.valueOf(source.getStatus()));
+        user.setStatus(source.getStatus() == null ?
+                EStatus.WAITING_ACTIVATION :
+                EStatus.valueOf(source.getStatus()));
         return user;
     }
 }

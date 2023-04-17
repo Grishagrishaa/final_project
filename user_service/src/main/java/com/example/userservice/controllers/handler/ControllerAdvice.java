@@ -3,6 +3,7 @@ package com.example.userservice.controllers.handler;
 
 import com.example.userservice.dto.errors.ErrorMessage;
 import com.example.userservice.dto.errors.StructuredError;
+import jakarta.persistence.OptimisticLockException;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 
 import java.util.stream.Collectors;
@@ -51,7 +51,7 @@ public class ControllerAdvice {
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(HttpRequestMethodNotSupportedException e){
         return new ErrorMessage(
-                "CHECK URL"
+                "CHECK URL/METHOD"
         );
     }
 
