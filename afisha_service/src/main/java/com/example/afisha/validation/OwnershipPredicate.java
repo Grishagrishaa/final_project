@@ -2,17 +2,15 @@ package com.example.afisha.validation;
 
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.security.enums.ERole;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiPredicate;
 
 @Component
+@RequiredArgsConstructor
 public class OwnershipPredicate implements BiPredicate<String, String > {
     private final UserHolder userHolder;
-
-    public OwnershipPredicate(UserHolder userHolder) {
-        this.userHolder = userHolder;
-    }
 
     @Override
     public boolean test(String eventAuthor, String username) {

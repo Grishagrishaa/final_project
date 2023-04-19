@@ -7,6 +7,7 @@ import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.service.api.IDecoratorService;
 import com.example.afisha.service.api.IEventService;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.TypeMismatchException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,14 +19,11 @@ import java.util.UUID;
 import static com.example.afisha.dao.entity.enums.EventType.*;
 
 @Service
+@RequiredArgsConstructor
 public class EventServiceDecorator implements IDecoratorService {
+
     private final IEventService<Film> filmService;
     private final IEventService<Concert> concertService;
-
-    public EventServiceDecorator(IEventService<Film> filmService, IEventService<Concert> concertService) {
-        this.filmService = filmService;
-        this.concertService = concertService;
-    }
 
     @Override
     public BaseEvent save(BaseEvent event) {
@@ -60,4 +58,5 @@ public class EventServiceDecorator implements IDecoratorService {
             default -> throw new TypeMismatchException("INTERNAL SERVER ERROR | CANNOT RECOGNIZE TYPE OF EVENT");
         };
     }
+
 }

@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig{
+
     private final JwtFilter filter;
     private static final String AFISHA_ENDPOINTS = "/afisha/event/**";
 
@@ -53,4 +54,5 @@ public class SecurityConfig{
                 .httpBasic(Customizer.withDefaults()) // (4)
                 .build();
     }
+
 }

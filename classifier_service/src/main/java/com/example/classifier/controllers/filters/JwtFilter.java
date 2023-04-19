@@ -1,7 +1,8 @@
-package com.example.classifier.controlers.filter;
+package com.example.classifier.controllers.filters;
 
 import com.example.classifier.security.utils.JwtTokenUtil;
 import com.example.classifier.service.rest.api.IRestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,10 +10,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,13 +21,10 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private final IRestService service;
-
-    public JwtFilter(IRestService service) {
-        this.service = service;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

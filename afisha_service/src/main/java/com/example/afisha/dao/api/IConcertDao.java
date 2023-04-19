@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface IConcertDao extends JpaRepository<Concert, UUID> {//todo generic
+
     /**
      * AUTHORIZED
      * @param status Concert Status
@@ -50,6 +51,5 @@ public interface IConcertDao extends JpaRepository<Concert, UUID> {//todo generi
      * @return one Concert
      */
     Optional<Concert> findByUuidIsAndStatusIs(UUID uuid, EventStatus status);
-
 
 }

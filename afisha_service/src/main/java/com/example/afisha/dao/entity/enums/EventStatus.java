@@ -1,17 +1,13 @@
 package com.example.afisha.dao.entity.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum EventStatus {
-    DRAFT("Черновик"),
-    PUBLISHED("Опубликовано");
+    DRAFT("Черновик"), PUBLISHED("Опубликовано");
 
     private final String status;
-
-    EventStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
 
 }

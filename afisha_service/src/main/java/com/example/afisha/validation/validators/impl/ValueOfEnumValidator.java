@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, CharSequence> {
+
     private List<String> acceptedValues;
 
     @Override
@@ -27,4 +28,5 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, Ch
 
         return acceptedValues.contains(value.toString());
     }
+
 }

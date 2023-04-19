@@ -5,7 +5,7 @@ import com.example.afisha.dao.entity.BaseEvent;
 import com.example.afisha.dao.entity.enums.EventType;
 import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.service.api.IDecoratorService;
-import com.example.afisha.validation.UrlTypeValidationPredicate;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,17 +34,12 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("${app.events.url}")
+@RequiredArgsConstructor
 public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
     private final IDecoratorService service;
     private final Predicate<String> urlTypeValidator;
     private final ModelMapper mapper;
-
-    public  EventController(IDecoratorService service, UrlTypeValidationPredicate urlTypeValidator, ModelMapper mapper) {
-        this.service = service;
-        this.urlTypeValidator = urlTypeValidator;
-        this.mapper = mapper;
-    }
 
     @GetMapping("/{type}/{uuid}")
     public ResponseEntity<BaseEvent> getEvent(@PathVariable String type, @PathVariable UUID uuid){

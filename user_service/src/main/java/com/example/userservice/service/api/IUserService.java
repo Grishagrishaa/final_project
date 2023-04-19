@@ -17,14 +17,14 @@ public interface IUserService extends UserDetailsService {
      * @param uuid  user id
      * @return one user
      */
-    User get(UUID uuid);
+    User findById(UUID uuid);
 
     /**
      *
      * @param pageable - page parameters
      * @return page of users
      */
-    Page<User> loadAll(Pageable pageable);
+    Page<User> findAll(Pageable pageable);
 
     /**
      * @param user user provided for saving in db

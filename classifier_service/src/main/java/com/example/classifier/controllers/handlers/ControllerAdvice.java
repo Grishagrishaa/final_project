@@ -1,13 +1,13 @@
-package com.example.userservice.controllers.handler;
+package com.example.classifier.controllers.handlers;
 
 
-import com.example.userservice.dto.errors.ErrorMessage;
-import com.example.userservice.dto.errors.StructuredError;
-import jakarta.persistence.OptimisticLockException;
+import com.example.classifier.service.dto.errors.ErrorMessage;
+import com.example.classifier.service.dto.errors.StructuredError;
+import io.netty.handler.timeout.ReadTimeoutException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -27,19 +27,20 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(OptimisticLockException.class)
-    public ResponseEntity<ErrorMessage> handle(OptimisticLockException e){
-        return ResponseEntity.status(409).body(ErrorMessage.builder()
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handle(UsernameNotFoundException e){
+        return ResponseEntity.badRequest().body(ErrorMessage.builder()
                 .message(e.getMessage())
                 .build());
     }
 
-    @ExceptionHandler(PSQLException.class)
-    public ResponseEntity<ErrorMessage> handle(PSQLException e){
-    return ResponseEntity.badRequest().body(ErrorMessage.builder()
-                .message(e.getServerErrorMessage().getDetail())
-            .build());
-}
+    @ExceptionHandler(ReadTimeoutException.class)
+    public ResponseEntity<ErrorMessage> handle(ReadTimeoutException e){
+        return ResponseEntity.internalServerError().body(ErrorMessage.builder()
+                .message("Connect Timed Out. Send request again")
+                .build());
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<StructuredError> handle(ConstraintViolationException e){
@@ -60,4 +61,3 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
                 .collect(toSet());
     }
 }
-

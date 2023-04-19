@@ -1,11 +1,12 @@
 package com.example.afisha.service.rest;
 
-import com.example.afisha.dto.uuidTest.ConcertCategoryTest;
-import com.example.afisha.dto.uuidTest.CountryTest;
+import com.example.afisha.dto.uuidTest.ConcertCategoryTestDto;
+import com.example.afisha.dto.uuidTest.CountryTestDto;
 import com.example.afisha.security.UserDetailsUser;
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.security.utils.JwtTokenUtil;
 import com.example.afisha.service.rest.api.IRestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +18,9 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
+@RequiredArgsConstructor
 public class RestService implements IRestService {
+
     @Value("${app.country.url}")
     private String countryUrl;
     @Value("${app.concert-category.url}")
@@ -25,11 +28,6 @@ public class RestService implements IRestService {
 
     private final WebClient webClient;
     private final UserHolder userHolder;
-
-    public RestService(WebClient webClient, UserHolder userHolder) {
-        this.webClient = webClient;
-        this.userHolder = userHolder;
-    }
 
     @Override
     public UserDetails loadUser(String headerValue) throws UsernameNotFoundException {
@@ -53,7 +51,7 @@ public class RestService implements IRestService {
                     .header(AUTHORIZATION, ("Bearer ".concat(
                             JwtTokenUtil.generateAccessToken(userHolder.getUser().getUsername()))))
 
-                    .retrieve().bodyToMono(CountryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
+                    .retrieve().bodyToMono(CountryTestDto.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
             return false;
         }
@@ -67,7 +65,7 @@ public class RestService implements IRestService {
                     .uri(String.join("/", concertCategoryUrl, id.toString()))
                     .header(AUTHORIZATION, ("Bearer ".concat(
                             JwtTokenUtil.generateAccessToken(userHolder.getUser().getUsername()))))
-                    .retrieve().bodyToMono(ConcertCategoryTest.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
+                    .retrieve().bodyToMono(ConcertCategoryTestDto.class).block();//ЕСЛИ ЗАПИСЬ НЕ НАЙДЕНА -> Ловим ошибку
         }catch (WebClientResponseException e){
             return false;
         }

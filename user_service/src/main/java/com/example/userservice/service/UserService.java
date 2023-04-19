@@ -7,6 +7,7 @@ import com.example.userservice.dto.users.SaveUserDto;
 import com.example.userservice.security.UserDetailsUser;
 import com.example.userservice.service.api.IUserService;
 import jakarta.persistence.OptimisticLockException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
@@ -32,18 +33,12 @@ import static com.example.userservice.dao.entity.enums.EStatus.WAITING_ACTIVATIO
 @Service
 @Validated
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService implements IUserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final ConversionService conversionService;
     private final IUserDao userDao;
 
-
-    public UserService(
-                       ConversionService conversionService,
-                       IUserDao userDao) {
-        this.conversionService = conversionService;
-        this.userDao = userDao;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String nick) throws UsernameNotFoundException {
@@ -55,7 +50,7 @@ public class UserService implements IUserService {
 
     @Override
     @Cacheable(cacheNames = "user")
-    public User get(UUID uuid) {
+    public User findById(UUID uuid) {
         User user = userDao.findById(uuid).orElseThrow(() -> new IllegalArgumentException("NOT FOUND"));
         log.info("GET USER - {}", user);
         return user;
@@ -63,7 +58,7 @@ public class UserService implements IUserService {
 
     @Override
     @Cacheable(cacheNames = "user")
-    public Page<User> loadAll(Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         Page<User> all = userDao.findAll(pageable);
         log.info("GET PAGE OF USERS, ELEMENTS - {}", all.getTotalElements());
         return all;
@@ -80,7 +75,7 @@ public class UserService implements IUserService {
         User saved = userDao.save(user);
         log.info("SAVE USER - {}", user);
 
-        return get(saved.getUuid());
+        return findById(saved.getUuid());
     }
 
 
@@ -89,7 +84,7 @@ public class UserService implements IUserService {
     @Transactional
     @CachePut(cacheNames = "user")
     public User updateUser(UUID uuid, LocalDateTime updateDate, @Valid SaveUserDto userDto) {
-        User user = get(uuid);
+        User user = findById(uuid);
 
         if(!user.getUpdateDate().isEqual(updateDate)){
             throw new OptimisticLockException("USER WAS ALREADY UPDATED");

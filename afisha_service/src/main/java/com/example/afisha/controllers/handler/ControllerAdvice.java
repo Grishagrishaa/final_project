@@ -5,8 +5,9 @@ import com.example.afisha.dto.errors.StructuredError;
 import com.example.afisha.exceptions.MyRoleNotFoundException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,70 +15,75 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.ConnectException;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(IllegalArgumentException e){
-        return new ErrorMessage(
-                e.getMessage()
-        );
+    public ResponseEntity<ErrorMessage> handle(IllegalArgumentException e){
+        return ResponseEntity.badRequest().body(ErrorMessage.builder()
+                                                            .message(e.getMessage())
+                                                            .build());
     }
 
     @ExceptionHandler(OptimisticLockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorMessage handle(OptimisticLockException e){
-        return new ErrorMessage(
-                e.getMessage()
-        );
+    public ResponseEntity<ErrorMessage> handle(OptimisticLockException e){
+        return ResponseEntity.status(409).body(ErrorMessage.builder()
+                .message(e.getMessage())
+                .build());
     }
 
 
     @ExceptionHandler(ConnectException.class)
-    @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorMessage handle(ConnectException e){
-        return new ErrorMessage(
-                "CLASSIFIER SERVICE ISN'T RESPONDING"
-        );
+    public ResponseEntity<ErrorMessage> handle(ConnectException e){
+        return ResponseEntity.internalServerError().body(ErrorMessage.builder()
+                .message("CLASSIFIER SERVICE ISN'T RESPONDING")
+                .build());
     }
 
     @ExceptionHandler(MyRoleNotFoundException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(MyRoleNotFoundException e){
-        return new ErrorMessage(
-                e.getMessage()
-        );
+    public ResponseEntity<ErrorMessage> handle(MyRoleNotFoundException e){
+        return ResponseEntity.badRequest().body(ErrorMessage.builder()
+                .message(e.getMessage())
+                .build());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ErrorMessage handle(UsernameNotFoundException e){
-        return new ErrorMessage(
-                e.getMessage()
-        );
+    public ResponseEntity<ErrorMessage> handle(UsernameNotFoundException e){
+        return ResponseEntity.badRequest().body(ErrorMessage.builder()
+                .message(e.getMessage())
+                .build());
     }
 
     @ExceptionHandler(ReadTimeoutException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorMessage handle(ReadTimeoutException e){
-        return new ErrorMessage(
-                "Connect Timed Out. Send request again"
-        );
+    public ResponseEntity<ErrorMessage>handle(ReadTimeoutException e){
+        return ResponseEntity.internalServerError().body(ErrorMessage.builder()
+                .message("Connect Timed Out. Send request again")
+                .build());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public StructuredError handle(ConstraintViolationException e){
-        return new StructuredError(e.getConstraintViolations().stream()
-                .map(exc -> new ErrorMessage(
-                        exc.getPropertyPath().toString().split("\\.")[2],
-                        exc.getMessage()))
-                .collect(Collectors.toSet()));
+    public ResponseEntity<StructuredError> handle(ConstraintViolationException e){
+        return ResponseEntity.badRequest().body(StructuredError.builder()
+                .errors(buildErrorMessages(e.getConstraintViolations()))
+                .build());
+    }
+
+    private Set<ErrorMessage> buildErrorMessages(Set<ConstraintViolation<?>> violations) {
+        return violations.stream()
+                .map(violation -> ErrorMessage.builder()
+                        .field(StreamSupport.stream(violation.getPropertyPath().spliterator(), false)
+                                .reduce((first, second) -> second)
+                                .orElse(null)
+                                .toString())
+                        .message(violation.getMessage())
+                        .build())
+                .collect(toSet());
     }
 }

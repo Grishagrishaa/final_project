@@ -1,17 +1,21 @@
 package com.example.classifier.config;
 
-import com.example.classifier.controlers.filter.JwtFilter;
-import org.springframework.http.HttpMethod;
+
+import com.example.classifier.controllers.filters.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletResponse;
 
+@Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig{
     private final JwtFilter filter;
     private static final String AUTHENTICATED_ENDPOINTS = "/classifier/**";
 
@@ -19,16 +23,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.filter = filter;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http = http.csrf().disable().cors().disable();
-
-        http = http.sessionManagement()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf().disable().cors().disable()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+                .and()
 
-        // Set unauthorized requests exception handler
-        http = http
+                .addFilterBefore(
+                        filter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, ex) -> {
@@ -38,19 +44,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             );
                         }
                 )
-                .and();
+                .and()
 
-        http.authorizeRequests()
-                .antMatchers().permitAll()
-                .antMatchers(HttpMethod.GET, AUTHENTICATED_ENDPOINTS).authenticated()
-                .antMatchers(HttpMethod.POST, AUTHENTICATED_ENDPOINTS).hasAuthority("ADMIN")
+                .authorizeHttpRequests()
+                .requestMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
+                .requestMatchers(AUTHENTICATED_ENDPOINTS).hasAuthority("ADMIN")
+                .anyRequest().anonymous()
 
+                .and()
 
-                .anyRequest().authenticated();
+                .httpBasic(Customizer.withDefaults()) // (4)
 
-        http.addFilterBefore(
-                filter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+                .build();
     }
 }

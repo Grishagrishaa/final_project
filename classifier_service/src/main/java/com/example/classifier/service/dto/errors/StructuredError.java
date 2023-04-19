@@ -1,22 +1,13 @@
 package com.example.classifier.service.dto.errors;
 
-import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.util.Set;
 
+@Getter
+@Builder
 public class StructuredError {
-    private final String logref;
+    private final String logref = "structured error";
     private final Set<ErrorMessage> errors;
-
-    public StructuredError(Set<ErrorMessage> errors) {
-        this.logref = "structured_error";
-        this.errors = errors;
-    }
-
-    public String getLogref() {
-        return logref;
-    }
-
-    public Set<ErrorMessage> getErrors() {
-        return errors;
-    }
 }

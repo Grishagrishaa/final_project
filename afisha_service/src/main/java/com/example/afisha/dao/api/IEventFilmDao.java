@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface IEventFilmDao extends JpaRepository<Film, UUID> {
+
     /**
      * AUTHORIZED
      * @param status FILM Status
@@ -49,7 +50,6 @@ public interface IEventFilmDao extends JpaRepository<Film, UUID> {
      * @return one Film
      */
     Optional<Film> findByUuidIsAndStatusIs(UUID uuid, EventStatus status);
-
 
 }
 

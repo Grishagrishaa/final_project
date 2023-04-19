@@ -1,15 +1,21 @@
 package com.example.afisha.dao.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "films", schema = "events")
 @EntityListeners(AuditingEntityListener.class)
+@Data @NoArgsConstructor
 public class Film extends BaseEvent {
+
     private UUID country;
     private Integer releaseYear;
     private LocalDateTime releaseDate;
@@ -30,49 +36,4 @@ public class Film extends BaseEvent {
         this.duration = duration;
     }
 
-    public Film() {
-    }
-
-
-    public UUID getCountry() {
-        return country;
-    }
-
-    public void setCountry(UUID country) {
-        this.country = country;
-    }
-
-    public Integer getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(Integer releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public LocalDateTime getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDateTime releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    @Override
-    public String toString() {
-        return "Film{" +
-                "country=" + country +
-                ", releaseYear=" + releaseYear +
-                ", releaseDate=" + releaseDate +
-                ", duration=" + duration +
-                '}';
-    }
 }

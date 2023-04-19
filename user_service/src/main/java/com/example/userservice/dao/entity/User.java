@@ -2,6 +2,9 @@ package com.example.userservice.dao.entity;
 
 import com.example.userservice.dao.entity.enums.EStatus;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.*;
@@ -12,6 +15,8 @@ import java.util.*;
         @UniqueConstraint(columnNames = "mail", name = "emailConstraint")
 })
 @EntityListeners(AuditingEntityListener.class)
+@Data @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class User extends BaseRecord{
 
     private String mail;
@@ -29,60 +34,4 @@ public class User extends BaseRecord{
     private EStatus status;
 
     private String password;
-
-    public User() {
-    }
-
-
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public EStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EStatus status) {
-        this.status = status;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "mail='" + mail + '\'' +
-                ", nick='" + nick + '\'' +
-                ", roles=" + roles +
-                ", status=" + status +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

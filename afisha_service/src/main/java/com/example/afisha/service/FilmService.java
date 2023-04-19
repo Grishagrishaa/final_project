@@ -7,6 +7,7 @@ import com.example.afisha.dto.SaveEventDtoFactory;
 import com.example.afisha.security.UserHolder;
 import com.example.afisha.service.api.IEventService;
 import com.example.afisha.validation.OwnershipPredicate;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,19 +28,14 @@ import static com.example.afisha.dao.entity.enums.EventStatus.*;
 
 @Component
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class FilmService implements IEventService<Film> {
+
     private static final Logger log = LoggerFactory.getLogger(FilmService.class);
     private final IEventFilmDao filmDao;
     private final ModelMapper mapper;
     private final BiPredicate<String, String> ownerValidator;
     private final UserHolder userHolder;
-
-    public FilmService(IEventFilmDao filmDao, ModelMapper mapper, OwnershipPredicate ownerValidator, UserHolder userHolder) {
-        this.filmDao = filmDao;
-        this.mapper = mapper;
-        this.ownerValidator = ownerValidator;
-        this.userHolder = userHolder;
-    }
 
 
     @Override
@@ -94,4 +90,5 @@ public class FilmService implements IEventService<Film> {
 
         return filmDao.save(film);
     }
+
 }

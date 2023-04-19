@@ -15,7 +15,7 @@ public class UserToUserDetailsConverter implements Converter<User, UserDetailsUs
 
     @Override
     public UserDetailsUser convert(User user) {
-        return UserDetailsUser.Builder.create()
+        return UserDetailsUser.builder()
                 .setUuid(user.getUuid())
                 .setUsername(user.getNick())
                 .setMail(user.getMail())

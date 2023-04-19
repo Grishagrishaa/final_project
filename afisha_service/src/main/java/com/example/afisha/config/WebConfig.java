@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebConfig {
+
     @Value("${app.users.url}")
     private String BASE_URL;
     @Value("${app.reqTimeOut}")
@@ -35,4 +36,5 @@ public class WebConfig {
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
                 .build();
     }
+
 }

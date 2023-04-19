@@ -1,15 +1,22 @@
 package com.example.afisha.dao.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "concerts", schema = "events")
 @EntityListeners(AuditingEntityListener.class)
+@Data @NoArgsConstructor
 public class Concert extends BaseEvent {
+
     @Column(nullable = false)
     private UUID category;
 
@@ -22,22 +29,4 @@ public class Concert extends BaseEvent {
         this.category = category;
     }
 
-    public Concert() {
-    }
-
-
-    public UUID getCategory() {
-        return category;
-    }
-
-    public void setCategory(UUID category) {
-        this.category = category;
-    }
-
-    @Override
-    public String toString() {
-        return "Concert{" +
-                "category=" + category +
-                '}';
-    }
 }

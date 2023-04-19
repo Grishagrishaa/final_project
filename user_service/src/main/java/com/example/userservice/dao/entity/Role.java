@@ -3,6 +3,10 @@ package com.example.userservice.dao.entity;
 import com.example.userservice.dao.entity.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 
@@ -11,6 +15,8 @@ import org.springframework.security.core.GrantedAuthority;
         @UniqueConstraint(columnNames = "id", name = "roleIdConstraint"),
         @UniqueConstraint(columnNames = "name", name = "roleNameConstraint")
 })
+@Data
+@NoArgsConstructor @Getter
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,27 +30,8 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public Role() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ERole getName() {
-        return name;
-    }
-
     @Override
     public String getAuthority() {
         return name.name();
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name=" + name +
-                '}';
     }
 }

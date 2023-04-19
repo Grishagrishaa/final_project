@@ -12,7 +12,7 @@ public class SpringPageToMyPageConverter implements Converter<Page<User>, MyPage
 
     @Override
     public MyPage<User> convert(Page<User> source) {
-        return MyPage.Builder.<User>create()
+        return MyPage.<User>builder()
                 .setContent(source.getContent())
                 .setTotalElements(source.getTotalElements())
                 .setNumberOfElements(source.getNumberOfElements())

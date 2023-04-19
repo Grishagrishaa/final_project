@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,8 +17,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Data @NoArgsConstructor
 public abstract class BaseEvent{
 
     @Id
@@ -56,101 +60,4 @@ public abstract class BaseEvent{
         this.author = author;
     }
 
-    public BaseEvent() {
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(LocalDateTime updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(LocalDateTime eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public LocalDateTime getDateEndOfSale() {
-        return dateEndOfSale;
-    }
-
-    public void setDateEndOfSale(LocalDateTime dateEndOfSale) {
-        this.dateEndOfSale = dateEndOfSale;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    @Override
-    public String toString() {
-        return "Event{" +
-                "uuid=" + uuid +
-                ", createDate=" + createDate +
-                ", updateDate=" + updateDate +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", eventDate=" + eventDate +
-                ", dateEndOfSale=" + dateEndOfSale +
-                ", type=" + type +
-                ", status=" + status +
-                '}';
-    }
 }
